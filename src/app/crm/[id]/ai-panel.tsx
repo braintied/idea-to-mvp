@@ -13,14 +13,13 @@ export function AiPanel({ contactId, hasEmail }: { contactId: string; hasEmail: 
   const [message, setMessage] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
-  const run = (work: () => Promise<void>) =>
+  // Each action returns { ok: true, value } or { ok: false, error }.
+  const run = <T,>(action: () => Promise<{ ok: true; value: T } | { ok: false; error: string }>, done: (value: T) => void) =>
     start(async () => {
       setMessage(null);
-      try {
-        await work();
-      } catch (error) {
-        setMessage(error instanceof Error ? error.message : "Something went wrong.");
-      }
+      const result = await action();
+      if (result.ok) done(result.value);
+      else setMessage(result.error);
     });
 
   return (
@@ -28,7 +27,7 @@ export function AiPanel({ contactId, hasEmail }: { contactId: string; hasEmail: 
       <div className="flex flex-wrap gap-2">
         <button
           disabled={pending}
-          onClick={() => run(async () => setSummary(await summarize(contactId)))}
+          onClick={() => run(() => summarize(contactId), setSummary)}
           className="rounded-lg border border-line px-3 py-2 text-sm disabled:opacity-60"
         >
           Summarize
@@ -36,7 +35,7 @@ export function AiPanel({ contactId, hasEmail }: { contactId: string; hasEmail: 
         {hasEmail && (
           <button
             disabled={pending}
-            onClick={() => run(async () => setFollowUp(await draft(contactId)))}
+            onClick={() => run(() => draft(contactId), setFollowUp)}
             className="rounded-lg border border-line px-3 py-2 text-sm disabled:opacity-60"
           >
             Draft follow-up
@@ -50,11 +49,13 @@ export function AiPanel({ contactId, hasEmail }: { contactId: string; hasEmail: 
       {followUp && (
         <form
           action={(form) =>
-            run(async () => {
-              await sendFollowUp(contactId, form);
-              setFollowUp(null);
-              setMessage("Sent, and logged as a note.");
-            })
+            run(
+              () => sendFollowUp(contactId, form),
+              () => {
+                setFollowUp(null);
+                setMessage("Sent, and logged as a note.");
+              },
+            )
           }
           className="mt-4 flex flex-col gap-2"
         >
@@ -75,7 +76,11 @@ export function AiPanel({ contactId, hasEmail }: { contactId: string; hasEmail: 
         </form>
       )}
 
-      {message && <p className="mt-3 text-sm text-muted">{message}</p>}
+      {message && (
+        <p role="status" className="mt-3 text-sm text-muted">
+          {message}
+        </p>
+      )}
     </section>
   );
 }

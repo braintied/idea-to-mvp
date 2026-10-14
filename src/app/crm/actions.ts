@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { attempt } from "@/lib/action-result";
 import { draftFollowUp, summarizeContact } from "@/lib/ai";
 import { sendEmail } from "@/lib/email";
 import { ownerEnv } from "@/lib/env";
@@ -89,16 +90,22 @@ async function loadContact(contactId: string) {
   return { contact, notes };
 }
 
+// The AI panel's actions return { ok, value | error } instead of throwing,
+// so the page can show what went wrong (see src/lib/action-result.ts).
 export async function summarize(contactId: string) {
-  const { contact, notes } = await loadContact(contactId);
-  return summarizeContact(contact, notes);
+  return attempt(async () => {
+    const { contact, notes } = await loadContact(contactId);
+    return summarizeContact(contact, notes);
+  });
 }
 
 export async function draft(contactId: string) {
-  const user = await getUser();
-  if (!user?.email) throw new Error("Sign in first.");
-  const { contact, notes } = await loadContact(contactId);
-  return draftFollowUp(contact, notes, user.email);
+  return attempt(async () => {
+    const user = await getUser();
+    if (!user?.email) throw new Error("Sign in first.");
+    const { contact, notes } = await loadContact(contactId);
+    return draftFollowUp(contact, notes, user.email);
+  });
 }
 
 const outgoing = z.object({
@@ -109,24 +116,30 @@ const outgoing = z.object({
 // Sends the (edited) draft, logs it as a note, and marks the contact
 // as contacted today so the daily digest stops nagging about them.
 export async function sendFollowUp(contactId: string, form: FormData) {
-  const user = await getUser();
-  if (!user?.email) throw new Error("Sign in first.");
-  const { subject, body } = outgoing.parse({
-    subject: form.get("subject"),
-    body: form.get("body"),
+  return attempt(async () => {
+    const user = await getUser();
+    if (!user?.email) throw new Error("Sign in first.");
+    const { subject, body } = outgoing.parse({
+      subject: form.get("subject"),
+      body: form.get("body"),
+    });
+    const { contact } = await loadContact(contactId);
+    if (!contact.email) throw new Error("This contact has no email address.");
+
+    await sendEmail({ to: contact.email, subject, text: body, replyTo: user.email });
+
+    const supabase = await createUserClient();
+    const { error: noteError } = await supabase
+      .from("notes")
+      .insert({ contact_id: contactId, body: `Emailed: ${subject}\n\n${body}` });
+    if (noteError) throw new Error(`Email sent, but logging it failed: ${noteError.message}`);
+    const { error: contactError } = await supabase
+      .from("contacts")
+      .update({ last_contacted_at: new Date().toISOString() })
+      .eq("id", contactId);
+    if (contactError) throw new Error(`Email sent, but updating the contact failed: ${contactError.message}`);
+    revalidatePath(`/crm/${contactId}`);
   });
-  const { contact } = await loadContact(contactId);
-  if (!contact.email) throw new Error("This contact has no email address.");
-
-  await sendEmail({ to: contact.email, subject, text: body, replyTo: user.email });
-
-  const supabase = await createUserClient();
-  await supabase.from("notes").insert({ contact_id: contactId, body: `Emailed: ${subject}\n\n${body}` });
-  await supabase
-    .from("contacts")
-    .update({ last_contacted_at: new Date().toISOString() })
-    .eq("id", contactId);
-  revalidatePath(`/crm/${contactId}`);
 }
 
 export async function signOut() {

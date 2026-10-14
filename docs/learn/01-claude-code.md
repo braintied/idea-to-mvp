@@ -1,5 +1,8 @@
 # 01 · Working with Claude Code
 
+> **Learn alongside:** lesson 1 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 Claude Code is an AI that works inside your project: it reads files, runs commands,
 opens the app in a browser, and edits code. Your job is to say what you want, check what
 it did, and decide. Six ideas make it reliable.

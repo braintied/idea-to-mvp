@@ -1,5 +1,8 @@
 # 03 · Supabase
 
+> **Learn alongside:** lesson 3 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 Supabase is your database (Postgres) plus sign-in, hosted for you.
 
 ## Tables

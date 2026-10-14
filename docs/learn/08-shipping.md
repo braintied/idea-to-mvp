@@ -1,5 +1,8 @@
 # 08 · Shipping
 
+> **Learn alongside:** lesson 8 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 ## The pieces
 
 - **GitHub** keeps every version of your code.

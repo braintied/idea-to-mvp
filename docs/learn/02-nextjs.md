@@ -1,5 +1,8 @@
 # 02 · Next.js
 
+> **Learn alongside:** lesson 2 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 Next.js is the framework the whole app is built in: the website, the CRM pages, and the
 server code behind them.
 

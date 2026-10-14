@@ -1,6 +1,6 @@
 # Learn the stack
 
-Created 2026-10-14 · Updated 2026-10-14 · Version 1
+Created 2026-10-14 · Updated 2026-10-15 · Version 2
 
 Each lesson is short and points at the real code in this repo. Read one, then try its
 prompt in Claude Code. Order matters a little: 01 and 02 first.
@@ -15,5 +15,10 @@ prompt in Claude Code. Order matters a little: 01 and 02 first.
 | 06 | [AI SDK](06-ai-sdk.md) | Calling a model, getting structured answers back |
 | 07 | [Inngest](07-inngest.md) | Jobs that run on a schedule or in the background |
 | 08 | [Shipping](08-shipping.md) | GitHub, Vercel, Cloudflare, and the check gate |
+
+Each lesson matches the same-numbered lesson of the
+[Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+Braintied Academy, which counts your progress as you go. See it from
+Claude Code with `/learn`.
 
 Stuck on something not covered here? Ask `/explain <your question>`.

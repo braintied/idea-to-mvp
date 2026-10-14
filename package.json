@@ -10,11 +10,13 @@
     "typecheck": "next typegen && tsc --noEmit",
     "check": "pnpm typecheck && pnpm lint && pnpm build",
     "inngest": "inngest-cli dev -u http://localhost:3000/api/inngest",
+    "db:login": "supabase login",
     "db:link": "supabase link",
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --linked > src/lib/database.types.ts",
     "prepare": "node scripts/install-git-hooks.mjs",
     "mcp:link": "node scripts/link-mcp.mjs",
+    "keys": "node scripts/keys.mjs",
     "verify": "pnpm check"
   },
   "dependencies": {
@@ -42,7 +44,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@8.15.0",
+  "packageManager": "pnpm@12.8.2",
   "engines": {
     "node": ">=22"
   }

@@ -43,3 +43,6 @@ next-env.d.ts
 # keep the template
 !.env.example
 !CLAUDE.md
+
+# Screenshots Claude takes while checking pages (playwright MCP)
+.playwright-mcp/

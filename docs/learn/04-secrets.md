@@ -1,5 +1,8 @@
 # 04 · Secrets and env vars
 
+> **Learn alongside:** lesson 4 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 API keys are passwords for services. Anyone who has your Resend key can send email as
 you; anyone with the Supabase secret key can read your whole database.
 

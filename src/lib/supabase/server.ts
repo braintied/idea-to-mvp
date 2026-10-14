@@ -2,6 +2,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import type { Database } from "@/lib/database.types";
 import { supabaseAdminEnv } from "@/lib/env";
 import { supabasePublicEnv } from "./public-env";
@@ -9,7 +10,10 @@ import { supabasePublicEnv } from "./public-env";
 // The everyday client: acts as the signed-in user, so row-level
 // security decides what they can see. Use this almost everywhere.
 export async function createUserClient() {
-  // Reading cookies first marks the page as per-request (never pre-built).
+  // Signed-in data is per-request: never pre-built, never cached. connection()
+  // tells Next.js so, which also lets Supabase check the session's expiry
+  // time (Date.now) without a "prerendering" error.
+  await connection();
   const cookieStore = await cookies();
   const { url, publishableKey } = supabasePublicEnv();
 

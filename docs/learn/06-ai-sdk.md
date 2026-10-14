@@ -1,5 +1,8 @@
 # 06 · The AI SDK
 
+> **Learn alongside:** lesson 6 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 The AI SDK is a library that talks to AI models (Claude, GPT, Gemini…) with one API.
 Every AI call in this app lives in [`src/lib/ai.ts`](../../src/lib/ai.ts).
 

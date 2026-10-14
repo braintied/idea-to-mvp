@@ -1,5 +1,8 @@
 # 07 · Inngest
 
+> **Learn alongside:** lesson 7 of the [Idea to Live Product](https://braintied.com/academy/idea-to-live-product) track on
+> Braintied Academy covers this too. `/learn` shows your progress.
+
 A web page only runs while someone is looking at it. Inngest runs work at other times:
 on a schedule, after an event, or in the background when a task takes too long for a
 page.

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Created 2026-10-14 · Updated 2026-10-14 · Version 2
+Created 2026-10-14 · Updated 2026-10-15 · Version 3
 
 Claude reads this file at the start of every session. It is the project's memory:
 what you're building, how it's built, and the rules. Keep it short and true. When Claude
@@ -49,7 +49,7 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
   `playwright` (open the app and look at it).
 - **Subagents** (`.claude/agents/`): `planner`, `reviewer`, `designer`.
 - **Skills** (from the `braintied` plugin): `/design`, `/brand-to-tokens`, `/explain`,
-  `/review-my-diff`, `/ship-it`, `/next`.
+  `/review-my-diff`, `/ship-it`, `/next`, `/learn` (Academy progress; optional).
 - **Guards**: Claude can't read real env files; git refuses commits containing keys and
   pushes that fail `pnpm check`.
 
@@ -75,6 +75,11 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
    current time goes in an async component wrapped in `<Suspense>`.
 10. **No fake data or placeholder features.** If something isn't built, say so.
 11. **Current docs, not memory.** Library APIs change; check context7 before using one.
+12. **Actions that call outside services return their errors.** On the live site Next.js
+    hides any error a server action throws. Wrap AI, email and other service calls in
+    `attempt()` from `src/lib/action-result.ts` and show `result.error` on the page.
+13. **Signed-in reads go through `createUserClient`.** It calls `connection()` so the
+    page renders per request; reading the clock or the session before that fails.
 
 ## Session exit checklist
 
@@ -95,7 +100,11 @@ pnpm check      # typecheck + lint + build (also runs on every push)
 pnpm db:push    # apply new migrations (changes the live database)
 pnpm db:types   # refresh src/lib/database.types.ts after a migration
 pnpm mcp:link   # point the Supabase MCP at your project (after pnpm db:link)
+pnpm keys       # the person fills in .env.local (their Terminal, never this chat)
 ```
+
+`pnpm db:login`, `pnpm db:link` and `pnpm keys` ask questions or open a browser. Ask the
+person to run them in their own Terminal; they won't work from your shell.
 
 ## Provenance
 
