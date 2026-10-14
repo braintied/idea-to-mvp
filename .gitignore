@@ -40,9 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# keep the template
+# keep the template, even where a global gitignore excludes these
+# (common on machines set up for AI tools)
 !.env.example
 !CLAUDE.md
+!.mcp.json
 
 # Screenshots Claude takes while checking pages (playwright MCP)
 .playwright-mcp/
