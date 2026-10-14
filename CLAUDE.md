@@ -1,19 +1,24 @@
 # CLAUDE.md
 
-Claude reads this file at the start of every session. It is your project's memory:
-what you're building, how it's built, and the rules you want followed. Keep it short
-and true. When Claude gets something wrong twice, add a line here.
+Created 2026-10-14 · Updated 2026-10-14 · Version 2
+
+Claude reads this file at the start of every session. It is the project's memory:
+what you're building, how it's built, and the rules. Keep it short and true. When Claude
+gets something wrong twice, add a line here.
 
 ## The idea
 
-<!-- Paste your one-paragraph brief from the morning session. Example: -->
-<!-- "Tiffin is a weekly home-cooked lunch subscription for remote workers in Goa.
-     People pick a cook near them, pay weekly, and get lunch delivered at 1pm." -->
+<!-- Paste your one-paragraph brief. Example:
+     "Tiffin is a weekly home-cooked lunch subscription for remote workers in Goa.
+      People pick a cook near them, pay weekly, and get lunch delivered at 1pm." -->
 
 **Who it's for:** _fill in_
 **The problem today:** _fill in_
 **What changes for them:** _fill in_
 **Name:** _fill in_ · **Domain:** _fill in_
+
+If this section is still blank, ask the person about their idea before building
+anything, or suggest `/design` to work through it.
 
 ## The brand
 
@@ -25,55 +30,75 @@ Voice: _fill in, e.g. "warm, plain, short sentences, no hype words"._
 
 ## How the app is built
 
+Read [docs/architecture.md](docs/architecture.md) for the map and three request
+journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
+
 | Piece | What it does | Where |
 |---|---|---|
-| Next.js | The website and the app | `src/app/` |
-| Supabase | Database + login (magic link) | `supabase/migrations/`, `src/lib/supabase/` |
-| Resend | Sends email | `src/lib/email.ts` |
-| AI SDK | Talks to the AI model | `src/lib/ai.ts` |
-| Inngest | Jobs that run on a schedule or in the background | `src/inngest/` |
-| Vercel | Hosting | deploys from GitHub |
+| Next.js | Website and app | `src/app/` |
+| Supabase | Database + sign-in | `supabase/migrations/`, `src/lib/supabase/` |
+| Resend | Email | `src/lib/email.ts` |
+| AI SDK | AI model calls | `src/lib/ai.ts` |
+| Inngest | Scheduled and background jobs | `src/inngest/` |
+| Vercel | Hosting, deploys from GitHub | |
 
-The CRM: `waitlist` (public form signups), `contacts`, `notes`. Row-level security means
-each user only ever sees their own contacts and notes.
+## The harness
+
+- **MCP** (`.mcp.json`): `supabase` (read-only, your project after `pnpm mcp:link`),
+  `context7` (current library docs; use it before writing code against any library),
+  `playwright` (open the app and look at it).
+- **Subagents** (`.claude/agents/`): `planner`, `reviewer`, `designer`.
+- **Skills** (from the `braintied` plugin): `/design`, `/brand-to-tokens`, `/explain`,
+  `/review-my-diff`, `/ship-it`, `/next`.
+- **Guards**: Claude can't read real env files; git refuses commits containing keys and
+  pushes that fail `pnpm check`.
 
 ## Rules
 
-1. **Plan first.** For anything bigger than a one-line change, write the plan and wait
-   for me to say go.
-2. **Small steps.** One feature at a time. After each one, run `pnpm check` and show me
-   it works in the browser before moving on.
-3. **Database changes are migrations.** Never change tables by hand in the Supabase
-   dashboard. Add a new file in `supabase/migrations/`, run `pnpm db:push`, then
-   `pnpm db:types`.
-4. **Every new table gets row-level security** turned on, with a policy, in the same
-   migration.
-5. **Secrets go in `.env.local` only.** Never in code, never in git. When you add a new
-   one, also add it (without the value) to `.env.example`.
-6. **Never use the admin client** (`createAdminClient`) in code that runs in the browser.
+1. **Plan first.** For anything bigger than a one-line change, use the planner (or plan
+   mode), show the plan, and wait for a go.
+2. **Small steps, checked.** One feature at a time. After each: `pnpm check`, then open
+   the page with playwright at phone and desktop width and show it working.
+3. **Teach as you go.** The person is learning. After each change, say in one or two
+   plain sentences which piece did what ("the server action saved it, RLS made sure only
+   you can see it"), and link the matching `docs/learn/` lesson.
+4. **Database changes are migrations.** Never change tables in the dashboard or through
+   MCP. New file in `supabase/migrations/`, then `pnpm db:push` (ask first: it changes
+   live data), then `pnpm db:types`.
+5. **Every new table gets row-level security** with a policy, in the same migration.
+6. **Secrets live in `.env.local` only.** Never ask the person to paste a key into the
+   chat. New variable → add its name to `.env.example` and tell them where to get it.
+7. **Admin client only on the server**, only when RLS must be skipped on purpose.
    Default to `createUserClient`.
-7. **Check input from forms with zod** before using it.
-8. **No fake data or placeholder features.** If something isn't built yet, say so
-   instead of faking it.
-9. **Mobile and desktop together.** Check both widths for every page you touch.
-10. **Live data loads inside `<Suspense>`.** This Next.js version pre-builds pages; anything
-    that reads the signed-in user, the database, or the current time goes in an async
-    component wrapped in `<Suspense>` (see `src/app/crm/page.tsx`). `pnpm check` fails if not.
-11. **Explain in plain words.** I'm not a programmer. When you finish, tell me what
-    changed, how to see it, and anything I need to do (like add a key).
+8. **Check form input with zod** before using it.
+9. **Live data inside `<Suspense>`.** Anything reading the user, the database, or the
+   current time goes in an async component wrapped in `<Suspense>`.
+10. **No fake data or placeholder features.** If something isn't built, say so.
+11. **Current docs, not memory.** Library APIs change; check context7 before using one.
+
+## Session exit checklist
+
+- [ ] `pnpm check` passes.
+- [ ] The change was seen working in the browser at both widths.
+- [ ] New env vars are in `.env.example`; new tables have RLS.
+- [ ] A changelog entry exists: `docs/changelog/YYYY-MM-DD-short-name.md` (what, why,
+      how it was checked).
+- [ ] If the architecture changed, `docs/architecture.md` says so.
+- [ ] You told the person what changed, how to see it, and anything they must do.
 
 ## Commands
 
 ```bash
-pnpm dev        # run the app at http://localhost:3000
-pnpm inngest    # run the Inngest dev server (background jobs) at http://localhost:8288
-pnpm check      # typecheck + lint + build: run before every push
-pnpm db:push    # apply new migrations to your Supabase project
-pnpm db:types   # regenerate src/lib/database.types.ts after a migration
+pnpm dev        # the app at http://localhost:3000
+pnpm inngest    # background-jobs dashboard at http://localhost:8288
+pnpm check      # typecheck + lint + build (also runs on every push)
+pnpm db:push    # apply new migrations (changes the live database)
+pnpm db:types   # refresh src/lib/database.types.ts after a migration
+pnpm mcp:link   # point the Supabase MCP at your project (after pnpm db:link)
 ```
 
-## Skills in this repo
+## Provenance
 
-- `/brand-to-tokens`: turn brand guidelines into the color and font tokens.
-- `/ship-it`: check, commit, push, and confirm the Vercel deploy.
-- `/review-my-diff`: review what changed before you push.
+Started from [braintied/idea-to-mvp](https://github.com/braintied/idea-to-mvp), the
+Edge City "Idea to Live Product in a Day" starter. Harness conventions follow the
+Braintied repo standard, simplified for first-time builders.

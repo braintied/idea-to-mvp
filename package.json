@@ -12,7 +12,10 @@
     "inngest": "inngest-cli dev -u http://localhost:3000/api/inngest",
     "db:link": "supabase link",
     "db:push": "supabase db push",
-    "db:types": "supabase gen types typescript --linked > src/lib/database.types.ts"
+    "db:types": "supabase gen types typescript --linked > src/lib/database.types.ts",
+    "prepare": "node scripts/install-git-hooks.mjs",
+    "mcp:link": "node scripts/link-mcp.mjs",
+    "verify": "pnpm check"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.79",

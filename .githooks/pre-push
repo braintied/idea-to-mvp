@@ -1,0 +1,9 @@
+#!/bin/sh
+# Refuse to push code that doesn't typecheck, lint, and build.
+# This is the same build Vercel runs, so a broken push never reaches your live site.
+echo "pre-push: running pnpm check (typecheck, lint, build)..."
+pnpm check || {
+  echo ""
+  echo "Push blocked: pnpm check failed. Fix the errors above (or ask Claude to), then push again."
+  exit 1
+}
