@@ -25,6 +25,36 @@ What you get, already wired:
 | [Vercel](https://vercel.com) | Hosting | Yes |
 | [Cloudflare](https://cloudflare.com) | Your domain | ~$10/year |
 
+## Deploy in one click
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=ANTHROPIC_API_KEY%2CAI_MODEL%2CRESEND_API_KEY%2CEMAIL_FROM%2COWNER_EMAIL&envDescription=Anthropic+key+%28console.anthropic.com%29%2C+the+Claude+model+id+%28claude-sonnet-5-5%29%2C+Resend+key+%28resend.com%29%2C+the+sender+%28Your+Idea+%3Conboarding%40resend.dev%3E+until+your+domain+is+verified%29+and+the+email+you+will+sign+in+with.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
+
+The button copies this starter into your GitHub, creates your Vercel project, sets up a
+**Supabase** database and **Inngest** for you (both free to start, through Vercel), and
+asks for five values:
+
+| It asks for | Where to get it |
+|---|---|
+| `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys (add $5 of credit first) |
+| `AI_MODEL` | `claude-sonnet-5-5` |
+| `RESEND_API_KEY` | resend.com → API Keys |
+| `EMAIL_FROM` | `Your Idea <onboarding@resend.dev>` until your own domain is verified in Resend |
+| `OWNER_EMAIL` | The email you'll sign in with (the one you signed up to Resend with) |
+
+The first deploy creates the database tables. Two steps stay manual:
+
+1. **Supabase sign-in links.** In Vercel → your project → **Storage → Supabase → Open in
+   Supabase**, go to **Authentication → URL Configuration**. Set the Site URL to your
+   Vercel address (`https://my-idea.vercel.app`) and add `https://my-idea.vercel.app/auth/callback`
+   to Redirect URLs. While you're there, set **Authentication → Emails → SMTP Settings**
+   to Resend (host `smtp.resend.com`, port `465`, user `resend`, password: your Resend key),
+   or sign-in emails stop after two an hour.
+2. **Your domain in Resend**, when you have one: Resend → Domains, copy its DNS records into
+   Cloudflare, then change `EMAIL_FROM` in Vercel → Settings → Environment Variables.
+
+To work on it on your computer, clone the new repo and follow [Setup](#setup-about-45-minutes)
+from step 1, using the database the button made.
+
 ## Before the workshop
 
 You need these accounts, a computer with [Claude](https://claude.ai/download) installed,
@@ -103,6 +133,11 @@ paste. Run it again any time to change one.
 | Anthropic key | console.anthropic.com → **API Keys** |
 | OpenAI key (optional) | platform.openai.com/api-keys. Only `/design` images use it. |
 
+Then send sign-in emails through Resend too. Supabase's built-in email stops after two
+an hour, which locks you out after one typo. In Supabase → **Authentication → Emails →
+SMTP Settings**, turn on custom SMTP: host `smtp.resend.com`, port `465`, username
+`resend`, password your Resend key, sender the same address as `EMAIL_FROM`.
+
 ### 4. Turn on Claude's tools
 
 Quit and reopen Claude Code in this folder (or start a new session), accept the prompts
@@ -122,10 +157,8 @@ Open http://localhost:3000 and try the whole loop:
 3. In the CRM, add your waitlist entry as a contact, write a note, then try
    **Summarize**, **Draft follow-up** and **Send** (to yourself).
 
-Supabase's built-in sign-in email only reaches people on your Supabase team and sends
-a few per hour. That's fine for you; before real users sign in, set Supabase →
-**Authentication → Emails → SMTP Settings** to Resend (host `smtp.resend.com`, port
-`465`, user `resend`, password: your Resend key).
+No sign-in email? Wait a minute before asking again: Supabase sends one per address per
+minute. The [runbook](docs/runbook.md) covers the rest.
 
 To see background jobs, run this in a second Terminal tab, open http://localhost:8288,
 go to **Functions → daily-follow-up-digest → Invoke**, and check your inbox:
@@ -137,8 +170,10 @@ pnpm inngest
 ### 6. Put it live
 
 1. Push your code to GitHub.
-2. In Vercel, **Add New → Project**, import the repo, paste every value from `.env.local`
-   into Environment Variables, and change `NEXT_PUBLIC_SITE_URL` to your live address.
+2. In Vercel, **Add New → Project**, import the repo, and paste every value from
+   `.env.local` into Environment Variables except `NEXT_PUBLIC_SITE_URL` (the live site
+   uses its Vercel address until you add your own domain; then set it to that).
+   (Used the Deploy Button? This is already done.)
 3. In Vercel → **Integrations**, add **Inngest**. It sets the Inngest keys for you.
 4. In Vercel → **Domains**, add your Cloudflare domain and copy the DNS records it asks
    for into Cloudflare.

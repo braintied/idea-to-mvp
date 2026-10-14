@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { siteEnv } from "@/lib/env";
+import { siteUrl } from "@/lib/env";
 import { createUserClient } from "@/lib/supabase/server";
 
 export type LoginState =
@@ -16,7 +16,7 @@ export async function sendMagicLink(_previous: LoginState, form: FormData): Prom
   const supabase = await createUserClient();
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data,
-    options: { emailRedirectTo: `${siteEnv().NEXT_PUBLIC_SITE_URL}/auth/callback` },
+    options: { emailRedirectTo: `${siteUrl()}/auth/callback` },
   });
   if (error) return { status: "error", message: error.message };
 

@@ -1,5 +1,5 @@
 import { sendEmail } from "@/lib/email";
-import { siteEnv } from "@/lib/env";
+import { siteUrl } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/server";
 import { inngest } from "./client";
 
@@ -26,7 +26,7 @@ export const dailyFollowUpDigest = inngest.createFunction(
     });
 
     const byUser = Map.groupBy(stale, (contact) => contact.user_id);
-    const site = siteEnv().NEXT_PUBLIC_SITE_URL;
+    const site = siteUrl();
 
     for (const [userId, contacts] of byUser) {
       await step.run(`email-${userId}`, async () => {

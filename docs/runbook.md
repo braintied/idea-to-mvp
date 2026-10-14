@@ -7,8 +7,8 @@ Paste the exact error into Claude Code first. These are the usual causes.
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | "X is not set up yet. Check these in .env.local" | A missing env var | Add it to `.env.local` (and Vercel for the live site). The message names it. |
-| Magic link email never arrives | Supabase's built-in email only reaches your Supabase team and sends a few per hour | Use your own (team) email and wait. For anyone else, set Supabase → Authentication → Emails → SMTP Settings to Resend (see README step 5). |
-| "email rate limit exceeded" on sign-in | Same limit | Wait up to an hour, or set up Resend SMTP. |
+| Magic link email never arrives | Asked twice within a minute (Supabase sends one per address per minute), or the built-in email's two-an-hour limit | Wait a minute and ask once. Set Supabase → Authentication → Emails → SMTP Settings to Resend (README step 3) to lift the hourly limit. |
+| "email rate limit exceeded" on sign-in | Supabase's built-in email: two an hour | Set up Resend SMTP (README step 3), or wait up to an hour. |
 | `pnpm db:link` says "Access token not provided" | Not logged in to Supabase | Run `pnpm db:login` first, in your own Terminal. |
 | `pnpm db:link` or `pnpm keys` hangs or errors when Claude runs it | They ask questions only you can answer | Run them yourself in Terminal. |
 | Magic link opens but lands on /login | Redirect URL not allowed | Supabase → Authentication → URL Configuration: add `<site>/auth/callback`. |
@@ -19,5 +19,8 @@ Paste the exact error into Claude Code first. These are the usual causes.
 | Live site shows old version | Deploy failed or still running | Vercel → Deployments: open the latest, read the build log. |
 | `pnpm inngest` shows no functions, or "Expected server kind cloud, got dev" | The app isn't in Inngest dev mode | `src/inngest/client.ts` sets `isDev` while `pnpm dev` runs; make sure `pnpm dev` (not `pnpm start`) is running on port 3000. |
 | AI or Send button says "Minified React error" on the live site | An action threw instead of returning its error | Wrap it in `attempt()` from `src/lib/action-result.ts`, like the AI panel's actions. |
+| Deploy Button build fails at "migrate-on-build" | The database refused the migration (the Supabase message is just above) | Paste that message into Claude Code. If a migration file is wrong, fix it in a new migration; never edit one that already ran. |
+| Live sign-in link opens the login page again | Redirect URL not set for the Vercel address | Supabase → Authentication → URL Configuration: add `https://<your-project>.vercel.app/auth/callback`. |
+| "email rate limit exceeded" on the live site | Supabase's built-in email: two an hour | Supabase → Authentication → Emails → SMTP Settings → Resend (README, "Deploy in one click"). |
 | Digest never sends | Inngest not connected in production | Vercel → Integrations → Inngest; then Inngest dashboard → Apps should list this app. |
 | AI button errors | Missing/empty-credit Anthropic key, or wrong `AI_MODEL` | Check console.anthropic.com usage and the model id. |

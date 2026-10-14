@@ -9,6 +9,24 @@
 - **Vercel** watches GitHub and deploys each push to `main` to your live site.
 - **Cloudflare** holds your domain; its DNS points the domain at Vercel.
 
+## The first deploy: the Deploy Button
+
+The README's **Deploy with Vercel** button does the first deploy in one pass: it copies
+the starter into your GitHub, creates the Vercel project, sets up Supabase and Inngest
+through Vercel, and asks for your keys in Vercel's own form (keys never go in a link or a
+chat). On that first build, [`scripts/migrate-on-build.mjs`](../../scripts/migrate-on-build.mjs)
+creates the tables from `supabase/migrations/`, and runs again on every later deploy,
+applying only new files.
+
+What the button can't do, so you do it once:
+
+1. **Supabase sign-in links**: add your Vercel address and `/auth/callback` to Supabase →
+   Authentication → URL Configuration, and set its SMTP to Resend.
+2. **Your domain in Resend**: its DNS records go into Cloudflare.
+
+Until you set `NEXT_PUBLIC_SITE_URL`, links in emails use your Vercel address
+(`siteUrl()` in [`src/lib/env.ts`](../../src/lib/env.ts)).
+
 ## The check gate
 
 `pnpm check` runs three things, and all must pass:

@@ -41,7 +41,15 @@ export const aiEnv = () =>
     AI_MODEL: z.string().min(1),
   });
 
-export const siteEnv = () =>
-  read("Site", {
-    NEXT_PUBLIC_SITE_URL: z.url(),
-  });
+// Your site's address, for links in emails. NEXT_PUBLIC_SITE_URL wins when
+// set (local: http://localhost:3000, or your own domain once it's live).
+// On Vercel without it, the project's production address is used; Vercel
+// provides it as VERCEL_PROJECT_PRODUCTION_URL, so a fresh deploy works
+// before you know your URL.
+export function siteUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return read("Site", { NEXT_PUBLIC_SITE_URL: z.url() }).NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return `https://${vercel}`;
+  throw new Error("Site is not set up yet. Set NEXT_PUBLIC_SITE_URL in .env.local (see .env.example).");
+}

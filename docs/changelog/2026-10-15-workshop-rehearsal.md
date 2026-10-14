@@ -1,6 +1,6 @@
 # 2026-10-15 · Workshop rehearsal: setup fixes, three app bugs, Academy links
 
-Created 2026-10-15 · Updated 2026-10-15 · Version 1
+Created 2026-10-15 · Updated 2026-10-15 · Version 2
 
 A full run of the README as a first-time attendee, on a fresh clone of the template.
 Cloud accounts were not approved for the run, so the database, sign-in, CRM and Inngest
@@ -54,7 +54,63 @@ separately; lessons link to the track page until per-lesson URLs exist.
   generated). It produced the brief, direction, tokens, five image prompts, a composed
   landing page and a critique with four fixes. Checked at 390 and 1440 px.
 
-## Not yet run (needs G's OK for cloud accounts)
+## Live run (real Supabase, Resend, Anthropic, OpenAI)
+
+Run on a private repo from the template (`braintied/idea-to-mvp-rehearsal`) and a
+throwaway Supabase project in Mumbai, all to be deleted after the rehearsal.
+
+| Step | Result | Time |
+|---|---|---|
+| Use this template → private repo, clone | works | 10 s |
+| `pnpm install` | works | 2 s (warm cache) |
+| Supabase project create (free org) | healthy | 10 s |
+| `pnpm db:link` / `pnpm db:push` | works | 3 s / 2 s |
+| `pnpm mcp:link` | **crashed**: `.mcp.json` was missing from the template (bug 11) | fixed |
+| Waitlist + welcome email (Resend, `mail.sentigen.ai`) | delivered | 5 s |
+| Sign-in email through Resend SMTP → `/crm` | delivered in 4 s, signed in | 13 s |
+| Add to CRM, add contact, note | works on the real database | 5 s |
+| Summarize / Draft follow-up | the readable error showed "out of credit": the Braintied Anthropic org has no credit | blocked |
+| `gpt-image-2.5-flare` hero for the `/design` sample | on brief, 1536×1024 | 29 s |
+| Push through the pre-push gate | `pnpm check` passed | 11 s |
+
+More found live:
+
+11. **`.mcp.json` never shipped.** A global gitignore on the authoring machine excluded
+    it, so repos made from the template had no Supabase, docs or browser tools, and
+    `pnpm mcp:link` crashed. It's now tracked and re-included in the template's
+    `.gitignore`.
+12. **Supabase's built-in email** allows two emails an hour per project, plus one per
+    address per minute. The second sign-in request locked the rehearsal out. Contrary
+    to what the docs said before, it delivered to a non-team address. Resend SMTP is
+    now a setup step (README step 3), not an option.
+13. **First sign-in is a "Confirm your email address" email**, not "Your sign-in link".
+    It works the same way. The callback needs the same browser that asked for the
+    link (PKCE), so the email must be opened on the same device.
+14. **The live address isn't known before the first deploy**, yet the README said to set
+    `NEXT_PUBLIC_SITE_URL` to it. `siteUrl()` now falls back to Vercel's
+    `VERCEL_PROJECT_PRODUCTION_URL`.
+
+## W0: Deploy Button
+
+- The README opens with **Deploy with Vercel**. It clones the template and provisions
+  Supabase (`stores`: `supabase/supabase`) and Inngest (`inngest/account`) through the
+  Vercel Marketplace. It also prompts for `ANTHROPIC_API_KEY`, `AI_MODEL`,
+  `RESEND_API_KEY`, `EMAIL_FROM` and `OWNER_EMAIL`. Integration ids from the
+  Marketplace pages: Supabase `oac_VqOgBHqhEoFTPzGkPd7L0iH6`, Inngest
+  `oac_H9biZULoTuJYFO32xkUydDmT`, Resend `oac_KfIFnjXqCl4YJCHnt1bDTBI1` (Resend is left
+  out: its Marketplace plans start at $20).
+- The Supabase Marketplace syncs exactly the names the app reads
+  (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
+  `SUPABASE_SECRET_KEY`) plus `POSTGRES_URL_NON_POOLING`.
+- `vercel-build` runs `scripts/migrate-on-build.mjs` (`supabase db push --db-url
+  $POSTGRES_URL_NON_POOLING --include-all --yes`) before `next build`. It skips when
+  that variable is absent.
+- The two manual steps left, for Kit to send with the link: Supabase URL configuration
+  plus Resend SMTP, and the Resend domain.
+- **Not yet tested end to end.** That needs a click-through in a signed-in Vercel
+  session plus G's deploy go-ahead.
+
+## Not yet run
 
 Real Supabase project (`db:login`/`link`/`push`, `mcp:link`, `/mcp` sign-in), Resend
 delivery, Anthropic summaries and drafts, the one gpt-image-2.5-flare image, Vercel
