@@ -102,9 +102,18 @@ More found live:
 - The Supabase Marketplace syncs exactly the names the app reads
   (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
   `SUPABASE_SECRET_KEY`) plus `POSTGRES_URL_NON_POOLING`.
-- `vercel-build` runs `scripts/migrate-on-build.mjs` (`supabase db push --db-url
-  $POSTGRES_URL_NON_POOLING --include-all --yes`) before `next build`. It skips when
-  that variable is absent.
+- `vercel-build` runs `scripts/migrate-on-deploy.mjs` before `next build`, on production
+  builds only (previews never touch the live database). It moves a transaction-pooler
+  `:6543` address to session mode `:5432`, because Vercel's build machines are IPv4-only.
+  It skips when there is no database address. The script and
+  `scripts/deploy-button-url.mjs` (`pnpm deploy-button` prints the link) came from the
+  stage C session's parallel W0 branch (`feat/deploy-button` @ 6189a0d), merged here so
+  there is one W0. That session tested the script against a local Postgres 17.11
+  container: it applied the migration, a second run reported up to date, and a wrong
+  password exited 1.
+- First-laptop check: with no git credentials, `git clone` of a private repo made from
+  the template fails ("could not read Username"); the public template clones. Attendees
+  need `gh auth login` (or GitHub Desktop sign-in) before cloning their own copy.
 - The two manual steps left, for Kit to send with the link: Supabase URL configuration
   plus Resend SMTP, and the Resend domain.
 - **Not yet tested end to end.** That needs a click-through in a signed-in Vercel

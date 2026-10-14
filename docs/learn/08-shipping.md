@@ -14,7 +14,7 @@
 The README's **Deploy with Vercel** button does the first deploy in one pass: it copies
 the starter into your GitHub, creates the Vercel project, sets up Supabase and Inngest
 through Vercel, and asks for your keys in Vercel's own form (keys never go in a link or a
-chat). On that first build, [`scripts/migrate-on-build.mjs`](../../scripts/migrate-on-build.mjs)
+chat). On the first production build, [`scripts/migrate-on-deploy.mjs`](../../scripts/migrate-on-deploy.mjs)
 creates the tables from `supabase/migrations/`, and runs again on every later deploy,
 applying only new files.
 

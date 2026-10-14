@@ -19,7 +19,7 @@ Paste the exact error into Claude Code first. These are the usual causes.
 | Live site shows old version | Deploy failed or still running | Vercel → Deployments: open the latest, read the build log. |
 | `pnpm inngest` shows no functions, or "Expected server kind cloud, got dev" | The app isn't in Inngest dev mode | `src/inngest/client.ts` sets `isDev` while `pnpm dev` runs; make sure `pnpm dev` (not `pnpm start`) is running on port 3000. |
 | AI or Send button says "Minified React error" on the live site | An action threw instead of returning its error | Wrap it in `attempt()` from `src/lib/action-result.ts`, like the AI panel's actions. |
-| Deploy Button build fails at "migrate-on-build" | The database refused the migration (the Supabase message is just above) | Paste that message into Claude Code. If a migration file is wrong, fix it in a new migration; never edit one that already ran. |
+| Deploy Button build fails at "migrate-on-deploy" | The database refused the migration (the Supabase message is just above) | Paste that message into Claude Code. If a migration file is wrong, fix it in a new migration; never edit one that already ran. |
 | Live sign-in link opens the login page again | Redirect URL not set for the Vercel address | Supabase → Authentication → URL Configuration: add `https://<your-project>.vercel.app/auth/callback`. |
 | "email rate limit exceeded" on the live site | Supabase's built-in email: two an hour | Supabase → Authentication → Emails → SMTP Settings → Resend (README, "Deploy in one click"). |
 | Digest never sends | Inngest not connected in production | Vercel → Integrations → Inngest; then Inngest dashboard → Apps should list this app. |

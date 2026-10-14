@@ -27,7 +27,7 @@ What you get, already wired:
 
 ## Deploy in one click
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=ANTHROPIC_API_KEY%2CAI_MODEL%2CRESEND_API_KEY%2CEMAIL_FROM%2COWNER_EMAIL&envDescription=Anthropic+key+%28console.anthropic.com%29%2C+the+Claude+model+id+%28claude-sonnet-5-5%29%2C+Resend+key+%28resend.com%29%2C+the+sender+%28Your+Idea+%3Conboarding%40resend.dev%3E+until+your+domain+is+verified%29+and+the+email+you+will+sign+in+with.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=OWNER_EMAIL%2CANTHROPIC_API_KEY%2CRESEND_API_KEY%2CAI_MODEL%2CEMAIL_FROM&envDescription=OWNER_EMAIL%3A+the+email+you+sign+in+with+%28the+one+you+signed+up+to+Resend+with%29.+ANTHROPIC_API_KEY%3A+console.anthropic.com+%E2%86%92+API+Keys.+RESEND_API_KEY%3A+resend.com+%E2%86%92+API+Keys.+Keep+the+defaults+for+AI_MODEL+and+EMAIL_FROM.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&envDefaults=%7B%22AI_MODEL%22%3A%22claude-sonnet-5-5%22%2C%22EMAIL_FROM%22%3A%22My+Idea+%3Conboarding%40resend.dev%3E%22%7D&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
 
 The button copies this starter into your GitHub, creates your Vercel project, sets up a
 **Supabase** database and **Inngest** for you (both free to start, through Vercel), and
@@ -36,12 +36,12 @@ asks for five values:
 | It asks for | Where to get it |
 |---|---|
 | `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys (add $5 of credit first) |
-| `AI_MODEL` | `claude-sonnet-5-5` |
+| `AI_MODEL` | filled in: `claude-sonnet-5-5` |
 | `RESEND_API_KEY` | resend.com → API Keys |
-| `EMAIL_FROM` | `Your Idea <onboarding@resend.dev>` until your own domain is verified in Resend |
+| `EMAIL_FROM` | filled in: `onboarding@resend.dev`; change it once your domain is verified in Resend |
 | `OWNER_EMAIL` | The email you'll sign in with (the one you signed up to Resend with) |
 
-The first deploy creates the database tables. Two steps stay manual:
+The first production deploy creates the database tables ([`scripts/migrate-on-deploy.mjs`](scripts/migrate-on-deploy.mjs)). Two steps stay manual:
 
 1. **Supabase sign-in links.** In Vercel → your project → **Storage → Supabase → Open in
    Supabase**, go to **Authentication → URL Configuration**. Set the Site URL to your
