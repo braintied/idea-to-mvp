@@ -16,9 +16,10 @@ export const dailyFollowUpDigest = inngest.createFunction(
       const cutoff = new Date(Date.now() - STALE_AFTER_DAYS * 86_400_000).toISOString();
       const { data, error } = await createAdminClient()
         .from("contacts")
-        .select("id, user_id, name, company, last_contacted_at")
+        .select("id, user_id, name, company, last_contacted_at, created_at")
         .in("stage", ["lead", "talking", "customer", "partner"])
-        .or(`last_contacted_at.is.null,last_contacted_at.lt.${cutoff}`)
+        // Last contacted over a week ago, or never contacted and added over a week ago.
+        .or(`last_contacted_at.lt.${cutoff},and(last_contacted_at.is.null,created_at.lt.${cutoff})`)
         .order("last_contacted_at", { ascending: true, nullsFirst: true })
         .limit(500);
       if (error) throw new Error(error.message);
