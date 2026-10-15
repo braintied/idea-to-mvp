@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Created 2026-10-14 · Updated 2026-10-15 · Version 3
+Created 2026-10-14 · Updated 2026-10-15 · Version 4
 
 Claude reads this file at the start of every session. It is the project's memory:
 what you're building, how it's built, and the rules. Keep it short and true. When Claude
@@ -22,9 +22,10 @@ anything, or suggest `/design` to work through it.
 
 ## The brand
 
-Colors and fonts live only in `src/app/globals.css` as tokens (`--brand`, `--surface`,
-`--muted`...). Use Tailwind classes built from them (`bg-brand`, `text-muted`,
-`border-line`). Never write a hex color in a component.
+Colors live only in `src/app/globals.css` as tokens (`--brand`, `--surface`, `--muted`...).
+Fonts are loaded in `src/app/layout.tsx` (`next/font`) and exposed as `--font-sans` /
+`--font-mono` in globals.css. Use Tailwind classes built from the tokens (`bg-brand`,
+`text-muted`, `border-line`). Never write a hex color in a component.
 
 Voice: _fill in, e.g. "warm, plain, short sentences, no hype words"._
 
@@ -42,6 +43,15 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
 | Inngest | Scheduled and background jobs | `src/inngest/` |
 | Vercel | Hosting, deploys from GitHub | |
 
+**Which kind of project is this?** Most people start from the Deploy Button: Vercel made
+the repo, the Supabase project and the tables, and every push to `main` applies new
+migrations. Then don't run `pnpm db:push` for first setup, and the Supabase values come
+from Vercel's `.env.local` tab. If the person cloned the template by hand instead, the
+README's "Setup without the Deploy Button" applies. Ask if you're not sure.
+
+**CRM stages** live in `src/lib/crm.ts` and in the `contacts.stage` check constraint;
+change both in one migration (`/crm-fields`).
+
 ## The harness
 
 - **MCP** (`.mcp.json`): `supabase` (read-only, your project after `pnpm mcp:link`),
@@ -50,6 +60,9 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
 - **Subagents** (`.claude/agents/`): `planner`, `reviewer`, `designer`.
 - **Skills** (from the `braintied` plugin): `/design`, `/brand-to-tokens`, `/explain`,
   `/review-my-diff`, `/ship-it`, `/next`, `/learn` (Academy progress; optional).
+- **Workshop skills** (`.claude/skills/`, in this repo): `/doctor`, `/fix-deploy`,
+  `/connect-domain`, `/make-it-mine`, `/add-page`, `/add-table`, `/crm-fields`,
+  `/add-env`. Use them when the person asks for one of those moments.
 - **Guards**: Claude can't read real env files; git refuses commits containing keys and
   pushes that fail `pnpm check`.
 
@@ -69,10 +82,13 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
    so and ask first before pushing a commit that contains a migration.
 5. **Every new table gets row-level security** with a policy, in the same migration.
 6. **Secrets live in `.env.local` only.** Never ask the person to paste a key into the
-   chat. New variable → add its name to `.env.example` and tell them where to get it.
+   chat. New variable → add its name to `.env.example`, a field to `scripts/keys.mjs`, a
+   group in `src/lib/env.ts`, and tell them where to get it, to add it in Vercel, and to
+   redeploy (`/add-env`).
 7. **Admin client only on the server**, only when RLS must be skipped on purpose.
    Default to `createUserClient`.
-8. **Check form input with zod** before using it.
+8. **Check form input with zod** before using it: `safeParse`, never `.parse()` on user
+   input in an action. Form actions return `{ ok, error }` and the page shows the error.
 9. **Live data inside `<Suspense>`.** Anything reading the user, the database, or the
    current time goes in an async component wrapped in `<Suspense>`.
 10. **No fake data or placeholder features.** If something isn't built, say so.
@@ -103,6 +119,7 @@ pnpm db:push    # apply new migrations (changes the live database)
 pnpm db:types   # refresh src/lib/database.types.ts after a migration
 pnpm mcp:link   # point the Supabase MCP at your project (after pnpm db:link)
 pnpm keys       # the person fills in .env.local (their Terminal, never this chat)
+pnpm checkup    # one line per piece of the setup: set, missing or broken (never values)
 ```
 
 `pnpm db:login`, `pnpm db:link` and `pnpm keys` ask questions or open a browser. Ask the

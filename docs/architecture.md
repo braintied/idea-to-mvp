@@ -1,6 +1,6 @@
 # How this app works
 
-Created 2026-10-14 · Updated 2026-10-14 · Version 1
+Created 2026-10-14 · Updated 2026-10-15 · Version 2
 
 One page that shows how the pieces fit. Read this before changing anything big, and
 ask Claude `/explain <anything>` when a part isn't clear.
@@ -48,8 +48,8 @@ to `main` makes Vercel deploy the new version.
 2. `src/app/crm/[id]/page.tsx` loads the contact and notes as *you*, so row-level
    security only returns your rows.
 3. "Draft follow-up" calls `draft` in `src/app/crm/actions.ts`, which calls
-   `draftFollowUp` in `src/lib/ai.ts`. The AI SDK sends the notes to Claude and gets
-   back `{ subject, body }`.
+   `draftFollowUp` in `src/lib/ai.ts`. The AI SDK sends the notes to DeepSeek
+   (`deepseek-flash`, set by `AI_MODEL`) and gets back `{ subject, body }`.
 4. You edit it and press Send. `sendFollowUp` emails it, saves it as a note, and
    updates `last_contacted_at`.
 

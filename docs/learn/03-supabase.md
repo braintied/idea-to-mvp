@@ -17,7 +17,8 @@ Three tables, defined in
 ## Migrations: the database's history
 
 Never change tables by clicking in the Supabase dashboard. Every change is a new SQL
-file in `supabase/migrations/`, applied with `pnpm db:push`. That way the change is in
+file in `supabase/migrations/`, applied with `pnpm db:push` (or, on a Deploy Button
+project, by the next push to `main`). That way the change is in
 git, Claude can read it, and a fresh project can be rebuilt exactly. After a migration,
 `pnpm db:types` refreshes [`database.types.ts`](../../src/lib/database.types.ts) so the
 editor knows the new columns.
