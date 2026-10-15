@@ -23,7 +23,6 @@ create table public.contacts (
   name text not null check (length(name) between 1 and 200),
   email text,
   company text,
-  -- The app's list of stages is STAGES in src/lib/crm.ts; keep the two the same.
   stage text not null default 'lead'
     check (stage in ('lead', 'talking', 'customer', 'partner', 'archived')),
   last_contacted_at timestamptz,
