@@ -30,12 +30,22 @@ if (url.hostname.endsWith(".pooler.supabase.com") && url.port === "6543") {
   url.port = "5432";
 }
 
+// Errors are captured (and still printed in full) so a known cause can get a
+// plain-words explanation on top of the real message.
 const result = spawnSync(
   "pnpm",
   ["exec", "supabase", "db", "push", "--db-url", url.toString(), "--include-all", "--yes"],
-  { stdio: ["ignore", "inherit", "inherit"] },
+  { stdio: ["ignore", "inherit", "pipe"], encoding: "utf8" },
 );
+const errors = result.stderr ?? "";
+if (errors) process.stderr.write(errors);
 if (result.status !== 0) {
+  if (/password authentication failed/i.test(errors)) {
+    console.error(
+      "migrate-on-deploy: The database password in Vercel no longer matches Supabase (was it reset?). " +
+        "Update POSTGRES_URL_NON_POOLING and POSTGRES_PASSWORD in Vercel → Settings → Environment Variables, or ask a helper.",
+    );
+  }
   console.error("migrate-on-deploy: supabase db push failed. The deploy stops here so the site never runs without its tables.");
   process.exit(result.status ?? 1);
 }
