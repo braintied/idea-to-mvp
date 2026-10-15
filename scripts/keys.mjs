@@ -41,10 +41,10 @@ const fields = [
     check: (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || "Should be an email address",
   },
   {
-    name: "ANTHROPIC_API_KEY",
+    name: "DEEPSEEK_API_KEY",
     secret: true,
-    where: "console.anthropic.com → API Keys → Create Key",
-    check: (v) => v.startsWith("sk-ant-") || "Should start with sk-ant-",
+    where: "platform.deepseek.com → API keys → Create new API key (top up $2 first)",
+    check: (v) => v.startsWith("sk-") || "Should start with sk-",
   },
   {
     name: "OPENAI_API_KEY",

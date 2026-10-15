@@ -19,12 +19,12 @@ const params = new URLSearchParams({
   "repository-url": "https://github.com/braintied/idea-to-mvp",
   "project-name": "my-idea",
   "repository-name": "my-idea",
-  env: "OWNER_EMAIL,ANTHROPIC_API_KEY,RESEND_API_KEY,AI_MODEL,EMAIL_FROM",
+  env: "OWNER_EMAIL,DEEPSEEK_API_KEY,RESEND_API_KEY,AI_MODEL,EMAIL_FROM",
   envDescription:
-    "OWNER_EMAIL: the email you sign in with (the one you signed up to Resend with). ANTHROPIC_API_KEY: console.anthropic.com → API Keys. RESEND_API_KEY: resend.com → API Keys. Keep the defaults for AI_MODEL and EMAIL_FROM.",
+    "OWNER_EMAIL: the email you sign in with (the one you signed up to Resend with). DEEPSEEK_API_KEY: platform.deepseek.com → API keys. RESEND_API_KEY: resend.com → API Keys. Keep the defaults for AI_MODEL and EMAIL_FROM.",
   envLink: "https://github.com/braintied/idea-to-mvp#deploy-in-one-click",
   envDefaults: JSON.stringify({
-    AI_MODEL: "claude-sonnet-5-5",
+    AI_MODEL: "deepseek-flash",
     EMAIL_FROM: "My Idea <onboarding@resend.dev>",
   }),
   stores: JSON.stringify([

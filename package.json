@@ -22,7 +22,7 @@
     "deploy-button": "node scripts/deploy-button-url.mjs"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "4.0.79",
+    "@ai-sdk/deepseek": "3.0.64",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.3",
     "ai": "7.0.140",

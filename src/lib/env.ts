@@ -37,7 +37,7 @@ export const ownerEnv = () =>
 
 export const aiEnv = () =>
   read("AI", {
-    ANTHROPIC_API_KEY: z.string().min(1),
+    DEEPSEEK_API_KEY: z.string().min(1),
     AI_MODEL: z.string().min(1),
   });
 

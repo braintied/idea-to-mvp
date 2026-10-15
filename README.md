@@ -20,14 +20,14 @@ What you get, already wired:
 | [Next.js](https://nextjs.org) | The website and app | Yes |
 | [Supabase](https://supabase.com) | Database and sign-in | Yes |
 | [Resend](https://resend.com) | Email | Yes |
-| [AI SDK](https://ai-sdk.dev) + [Anthropic](https://console.anthropic.com) | AI features | Pay as you go (cents) |
+| [AI SDK](https://ai-sdk.dev) + [DeepSeek](https://platform.deepseek.com) | AI features | Pay as you go (a $2 top-up lasts the workshop) |
 | [Inngest](https://www.inngest.com) | Background and scheduled jobs | Yes |
 | [Vercel](https://vercel.com) | Hosting | Yes |
 | [Cloudflare](https://cloudflare.com) | Your domain | ~$10/year |
 
 ## Deploy in one click
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=OWNER_EMAIL%2CANTHROPIC_API_KEY%2CRESEND_API_KEY%2CAI_MODEL%2CEMAIL_FROM&envDescription=OWNER_EMAIL%3A+the+email+you+sign+in+with+%28the+one+you+signed+up+to+Resend+with%29.+ANTHROPIC_API_KEY%3A+console.anthropic.com+%E2%86%92+API+Keys.+RESEND_API_KEY%3A+resend.com+%E2%86%92+API+Keys.+Keep+the+defaults+for+AI_MODEL+and+EMAIL_FROM.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&envDefaults=%7B%22AI_MODEL%22%3A%22claude-sonnet-5-5%22%2C%22EMAIL_FROM%22%3A%22My+Idea+%3Conboarding%40resend.dev%3E%22%7D&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=OWNER_EMAIL%2CDEEPSEEK_API_KEY%2CRESEND_API_KEY%2CAI_MODEL%2CEMAIL_FROM&envDescription=OWNER_EMAIL%3A+the+email+you+sign+in+with+%28the+one+you+signed+up+to+Resend+with%29.+DEEPSEEK_API_KEY%3A+platform.deepseek.com+%E2%86%92+API+keys.+RESEND_API_KEY%3A+resend.com+%E2%86%92+API+Keys.+Keep+the+defaults+for+AI_MODEL+and+EMAIL_FROM.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&envDefaults=%7B%22AI_MODEL%22%3A%22deepseek-flash%22%2C%22EMAIL_FROM%22%3A%22My+Idea+%3Conboarding%40resend.dev%3E%22%7D&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
 
 The button copies this starter into your GitHub, creates your Vercel project, sets up a
 **Supabase** database and **Inngest** for you (both free to start, through Vercel), and
@@ -35,8 +35,8 @@ asks for five values:
 
 | It asks for | Where to get it |
 |---|---|
-| `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys (add $5 of credit first) |
-| `AI_MODEL` | filled in: `claude-sonnet-5-5` |
+| `DEEPSEEK_API_KEY` | platform.deepseek.com → API keys (top up $2 first) |
+| `AI_MODEL` | filled in: `deepseek-flash` |
 | `RESEND_API_KEY` | resend.com → API Keys |
 | `EMAIL_FROM` | filled in: `onboarding@resend.dev`; change it once your domain is verified in Resend |
 | `OWNER_EMAIL` | The email you'll sign in with (the one you signed up to Resend with) |
@@ -65,7 +65,7 @@ and a Claude Pro plan (it includes Claude Code).
 3. **Supabase.** Sign up at supabase.com with GitHub, then create a new project. Save
    the database password somewhere safe.
 4. **Resend.** Sign up at resend.com and create an API key.
-5. **Anthropic API.** Sign up at console.anthropic.com, add $5 of credit, create a key.
+5. **DeepSeek API.** Sign up at platform.deepseek.com, top up $2, create an API key.
 6. **Inngest.** Sign up at inngest.com with GitHub.
 7. **Cloudflare.** Sign up at cloudflare.com (you'll buy your domain in the morning).
 8. **Node.js.** Install the **LTS** version from nodejs.org, then in Terminal run
@@ -130,7 +130,7 @@ paste. Run it again any time to change one.
 | Resend key | resend.com → **API Keys → Create API Key** |
 | `EMAIL_FROM` | Keep `onboarding@resend.dev` for now. It can only email the address you signed up to Resend with. To email anyone, add your domain in Resend → **Domains**, copy the DNS records it shows into Cloudflare, then change `EMAIL_FROM` to `you@yourdomain.com`. |
 | `OWNER_EMAIL` | The email you'll sign in with. Use the one you signed up to Resend with. |
-| Anthropic key | console.anthropic.com → **API Keys** |
+| DeepSeek key | platform.deepseek.com → **API keys** |
 | OpenAI key (optional) | platform.openai.com/api-keys. Only `/design` images use it. |
 
 Then send sign-in emails through Resend too. Supabase's built-in email stops after two

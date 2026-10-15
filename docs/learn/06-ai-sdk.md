@@ -28,7 +28,7 @@ Nothing else in the app changes.
 
 ## Cost
 
-Each summary or draft costs a fraction of a cent. The Anthropic console shows usage.
+Each summary or draft costs a fraction of a cent on `deepseek-flash`. platform.deepseek.com shows usage.
 
 ## Try it
 

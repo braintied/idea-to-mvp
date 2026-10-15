@@ -19,7 +19,7 @@ ask Claude `/explain <anything>` when a part isn't clear.
              ┌────────────┘      │      └─────────────┐
              ▼                   ▼                    ▼
    ┌──────────────────┐ ┌────────────────┐  ┌──────────────────┐
-   │ Supabase         │ │ Resend         │  │ Anthropic (AI)   │
+   │ Supabase         │ │ Resend         │  │ DeepSeek (AI)    │
    │ database + login │ │ sends email    │  │ via the AI SDK   │
    └──────────────────┘ └────────────────┘  └──────────────────┘
              ▲
@@ -76,6 +76,6 @@ to `main` makes Vercel deploy the new version.
 ## Server vs browser
 
 Files that start with `"use client"` run in the visitor's browser. Everything else runs
-on the server. Secrets (`SUPABASE_SECRET_KEY`, `RESEND_API_KEY`, `ANTHROPIC_API_KEY`)
+on the server. Secrets (`SUPABASE_SECRET_KEY`, `RESEND_API_KEY`, `DEEPSEEK_API_KEY`)
 are only ever read on the server, through `src/lib/env.ts`. `import "server-only"` at
 the top of a file makes the build fail if browser code tries to import it.

@@ -24,4 +24,4 @@ Paste the exact error into Claude Code first. These are the usual causes.
 | "email rate limit exceeded" on the live site | Supabase's built-in email: two an hour | Supabase → Authentication → Emails → SMTP Settings → Resend (README, "Deploy in one click"). |
 | Inngest shows no app after the first deploy | The integration hasn't synced yet | Inngest dashboard → Apps → Sync new app, URL `https://<your-project>.vercel.app/api/inngest`. |
 | Digest never sends | Inngest not connected in production | Vercel → Integrations → Inngest; then Inngest dashboard → Apps should list this app. |
-| AI button errors | Missing/empty-credit Anthropic key, or wrong `AI_MODEL` | Check console.anthropic.com usage and the model id. |
+| AI button errors | Missing or empty-balance DeepSeek key, or wrong `AI_MODEL` | Check platform.deepseek.com usage; `AI_MODEL` should be `deepseek-flash`. |

@@ -1,16 +1,16 @@
 import "server-only";
-import { createAnthropic } from "@ai-sdk/anthropic";
+import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import type { Contact, Note } from "@/lib/database.types";
 import { aiEnv } from "@/lib/env";
 
 // All AI calls go through here. To switch models, change AI_MODEL in
-// .env.local. To switch providers, swap @ai-sdk/anthropic for another
+// .env.local. To switch providers, swap @ai-sdk/deepseek for another
 // AI SDK provider (openai, google...) — the rest of the app doesn't change.
 function model() {
   const env = aiEnv();
-  return createAnthropic({ apiKey: env.ANTHROPIC_API_KEY })(env.AI_MODEL);
+  return createDeepSeek({ apiKey: env.DEEPSEEK_API_KEY })(env.AI_MODEL);
 }
 
 function describe(contact: Contact, notes: Note[]) {
