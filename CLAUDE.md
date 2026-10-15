@@ -64,7 +64,9 @@ journeys. One lesson per piece is in [docs/learn/](docs/learn/README.md).
    you can see it"), and link the matching `docs/learn/` lesson.
 4. **Database changes are migrations.** Never change tables in the dashboard or through
    MCP. New file in `supabase/migrations/`, then `pnpm db:push` (ask first: it changes
-   live data), then `pnpm db:types`.
+   live data), then `pnpm db:types`. On a Deploy Button project, pushing to `main` also
+   applies new migrations to the live database (`scripts/migrate-on-deploy.mjs`), so say
+   so and ask first before pushing a commit that contains a migration.
 5. **Every new table gets row-level security** with a policy, in the same migration.
 6. **Secrets live in `.env.local` only.** Never ask the person to paste a key into the
    chat. New variable → add its name to `.env.example` and tell them where to get it.
