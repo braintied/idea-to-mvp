@@ -33,6 +33,11 @@ You need a laptop and two kinds of AI, which do different jobs:
   it includes Claude Code) with the [Claude app](https://claude.ai/download) installed.
   We build with **Opus 5.5 on medium thinking**; choose it in Claude Code's model picker.
   A ChatGPT plan with Codex works too: `AGENTS.md` points it at the same rules in `CLAUDE.md`.
+  Pay-as-you-go instead: code with **DeepSeek** through [OpenCode](https://opencode.ai)
+  (or Claude Code pointed at DeepSeek), using the same kind of key as below. It's cheaper
+  but more setup: download the OpenCode app, or install it and run it in a terminal such
+  as [Ghostty](https://ghostty.org). Get it working before the day; the workshop's steps
+  are written for Claude.
 - **An AI inside your app (an API key).** The starter's AI features (summaries, drafted
   follow-ups) use **DeepSeek**: load a few dollars at platform.deepseek.com and make a
   key (step 5). It's pay as you go and costs cents for the day.
