@@ -22,5 +22,6 @@ Paste the exact error into Claude Code first. These are the usual causes.
 | Deploy Button build fails at "migrate-on-deploy" | The database refused the migration (the Supabase message is just above) | Paste that message into Claude Code. If a migration file is wrong, fix it in a new migration; never edit one that already ran. |
 | Live sign-in link opens the login page again | Redirect URL not set for the Vercel address | Supabase → Authentication → URL Configuration: add `https://<your-project>.vercel.app/auth/callback`. |
 | "email rate limit exceeded" on the live site | Supabase's built-in email: two an hour | Supabase → Authentication → Emails → SMTP Settings → Resend (README, "Deploy in one click"). |
+| Inngest shows no app after the first deploy | The integration hasn't synced yet | Inngest dashboard → Apps → Sync new app, URL `https://<your-project>.vercel.app/api/inngest`. |
 | Digest never sends | Inngest not connected in production | Vercel → Integrations → Inngest; then Inngest dashboard → Apps should list this app. |
 | AI button errors | Missing/empty-credit Anthropic key, or wrong `AI_MODEL` | Check console.anthropic.com usage and the model id. |

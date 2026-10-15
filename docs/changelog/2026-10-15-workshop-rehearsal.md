@@ -1,6 +1,6 @@
 # 2026-10-15 · Workshop rehearsal: setup fixes, three app bugs, Academy links
 
-Created 2026-10-15 · Updated 2026-10-15 · Version 2
+Created 2026-10-15 · Updated 2026-10-15 · Version 3
 
 A full run of the README as a first-time attendee, on a fresh clone of the template.
 Cloud accounts were not approved for the run, so the database, sign-in, CRM and Inngest
@@ -116,8 +116,24 @@ More found live:
   need `gh auth login` (or GitHub Desktop sign-in) before cloning their own copy.
 - The two manual steps left, for Kit to send with the link: Supabase URL configuration
   plus Resend SMTP, and the Resend domain.
-- **Not yet tested end to end.** That needs a click-through in a signed-in Vercel
-  session plus G's deploy go-ahead.
+- **Verified 2026-10-15** on project `idea-to-mvp-button-test`. It took the button's
+  steps through the CLI (`vercel integration add supabase --plan free -m region=bom1`, then
+  `inngest` on Hobby), because the browser click-through stopped at Vercel's Git step
+  for a private source repo. Vercel refuses terms acceptance from an agent ("Term
+  acceptance cannot be performed by an AI agent"); G accepted in the browser.
+  - Supabase synced all of `NEXT_PUBLIC_SUPABASE_URL`,
+    `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` and
+    `POSTGRES_URL_NON_POOLING` (plus legacy anon/service-role names). Inngest synced
+    `INNGEST_EVENT_KEY` and `INNGEST_SIGNING_KEY`.
+  - Remote production build: `migrate-on-deploy` connected from Vercel's build machine
+    and applied `20261014000000_crm.sql` to the brand-new database. The build took 24 s,
+    the deploy 43 s.
+  - Live: `/` 200; `/crm` redirects to `/login`; the waitlist saved a row and the
+    welcome email was delivered. `/api/inngest` refuses unsigned calls (401). The first
+    `PUT /api/inngest` registered the app (`modified: true`), so check Inngest → Apps
+    after the first deploy.
+  - `vercel integration add` also writes Supabase "agent skills" into the project
+    (`.agents/`, `.claude/skills/`, `skills-lock.json`). Not committed.
 
 ## Not yet run
 
