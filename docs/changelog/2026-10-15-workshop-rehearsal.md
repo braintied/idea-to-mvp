@@ -135,6 +135,19 @@ More found live:
   - `vercel integration add` also writes Supabase "agent skills" into the project
     (`.agents/`, `.claude/skills/`, `skills-lock.json`). Not committed.
 
+## Teardown (2026-10-15)
+
+Deleted:
+- Vercel projects `idea-to-mvp-rehearsal` and `idea-to-mvp-button-test`.
+- The Marketplace Supabase and Inngest resources, and both Marketplace integrations
+  (the team is back to none).
+- Supabase project `jvvriwlhrujaupkjwuot` (GET now returns 404).
+- GitHub repos `braintied/idea-to-mvp-rehearsal` and `braintied/idea-to-mvp-button-test`.
+- Local env files, the DB password file and the local Docker database.
+
+Left: the `idea-to-mvp` app registered in Braintied's Inngest Cloud account by the first
+rehearsal deploy. Archive it in the Inngest dashboard (Apps → idea-to-mvp → Archive).
+
 ## Not yet run
 
 Real Supabase project (`db:login`/`link`/`push`, `mcp:link`, `/mcp` sign-in), Resend
