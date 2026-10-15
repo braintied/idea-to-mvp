@@ -29,7 +29,15 @@ export async function joinWaitlist(
   const { email, name } = parsed.data;
   const normalized = email.toLowerCase();
 
-  const supabase = createAdminClient();
+  let supabase: ReturnType<typeof createAdminClient>;
+  try {
+    supabase = createAdminClient();
+  } catch (setupError) {
+    // Supabase isn't connected yet (missing env). Say so instead of crashing
+    // the page, so the landing page can be shown before the database exists.
+    console.error("waitlist not connected", setupError);
+    return { status: "error", message: "The waitlist isn't open yet. Please check back soon." };
+  }
   const { error } = await supabase
     .from("waitlist")
     .upsert({ email: normalized, name: name ?? null }, { onConflict: "email", ignoreDuplicates: true });
