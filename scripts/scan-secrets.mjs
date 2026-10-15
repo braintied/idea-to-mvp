@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 
 const patterns = [
   ["Anthropic key", /sk-ant-[A-Za-z0-9_-]{20,}/],
-  ["OpenAI key", /sk-(proj-)?[A-Za-z0-9_-]{32,}/],
+  ["OpenAI or DeepSeek key", /sk-(proj-)?[A-Za-z0-9_-]{32,}/],
   ["Resend key", /\bre_[A-Za-z0-9]{8,}_[A-Za-z0-9]{16,}/],
   ["Supabase secret key", /sb_secret_[A-Za-z0-9_-]{16,}/],
   ["Supabase service-role JWT", /eyJhbGciOi[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]*cm9sZSI6InNlcnZpY2Vfcm9sZS[A-Za-z0-9_-]*/],

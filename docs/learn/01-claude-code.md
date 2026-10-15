@@ -42,9 +42,11 @@ Ask for one by name: *"Have the reviewer look at this before I push."*
 
 ## 6. Hooks and MCP: guardrails and tools
 
-**Hooks** ([`.claude/settings.json`](../../.claude/settings.json)) are scripts that run
-automatically. Here they stop Claude from reading `.env.local`, from committing a secret,
-and from pushing without `pnpm check` passing.
+**Hooks** are scripts that run automatically. A Claude hook
+([`.claude/hooks/guard-env.mjs`](../../.claude/hooks/guard-env.mjs), wired in
+[`.claude/settings.json`](../../.claude/settings.json)) stops Claude from reading `.env.local`.
+Git hooks ([`.githooks/`](../../.githooks)) refuse a commit that contains a secret and a push
+that fails `pnpm check`, whoever runs it.
 
 **MCP servers** ([`.mcp.json`](../../.mcp.json)) give Claude extra tools:
 

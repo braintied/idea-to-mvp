@@ -49,7 +49,10 @@ that's how you (and Claude) know why things are the way they are.
 
 `/ship-it` does all of it: review the diff, run the check, commit, push, confirm the
 deploy, and tell you what's live. Database changes (`pnpm db:push`) need your OK every
-time, since they change live data.
+time, since they change live data. If you used the Deploy Button, a push to `main` also
+applies new migrations to the live database during the Vercel build
+([`scripts/migrate-on-deploy.mjs`](../../scripts/migrate-on-deploy.mjs)), so a push that
+contains a migration needs the same OK.
 
 ## Try it
 
