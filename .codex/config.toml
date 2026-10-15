@@ -1,0 +1,16 @@
+# Codex (the ChatGPT app, CLI and IDE extension) reads this once you trust the project.
+# The model comes from your ChatGPT plan. Project rules are in AGENTS.md.
+# Never read or print .env files: AGENTS.md rule 6 and the Commands note.
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp?read_only=true&features=database,docs,debugging,development"
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]

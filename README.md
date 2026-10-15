@@ -29,15 +29,21 @@ What you get, already wired:
 
 You need a laptop and two kinds of AI, which do different jobs:
 
-- **An AI to build with (a subscription).** Our pick: a **Claude** plan (Pro or higher,
-  it includes Claude Code) with the [Claude app](https://claude.ai/download) installed.
-  We build with **Opus 5.5 on medium thinking**; choose it in Claude Code's model picker.
-  A ChatGPT plan with Codex works too: `AGENTS.md` points it at the same rules in `CLAUDE.md`.
-  Pay-as-you-go instead: code with **DeepSeek** through [OpenCode](https://opencode.ai)
-  (or Claude Code pointed at DeepSeek), using the same kind of key as below. It's cheaper
-  but more setup: download the OpenCode app, or install it and run it in a terminal such
-  as [Ghostty](https://ghostty.org). Get it working before the day; the workshop's steps
-  are written for Claude.
+- **An AI to build with.** Pick one; the repo is set up for all of them (rules in
+  [AGENTS.md](AGENTS.md), the same tools and skills in each):
+
+  | Tool | What you need | Install and sign in | Open the project |
+  |---|---|---|---|
+  | **Claude app** (our pick) | A Claude plan (Pro or higher) | [claude.ai/download](https://claude.ai/download), sign in. This repo defaults to **Opus on medium effort**. | **Code** → choose the folder |
+  | **ChatGPT app** (Codex) | A ChatGPT plan | [chatgpt.com/download](https://chatgpt.com/download), sign in, switch to **Codex** | Open the folder, then **trust** it so the repo's settings load |
+  | **OpenCode** with DeepSeek | Just the DeepSeek key below (pay as you go) | The app or the terminal version from [opencode.ai/download](https://opencode.ai/download). Connect DeepSeek with your key (in the app: connect a provider → DeepSeek; in a terminal: `opencode auth login`). The repo picks **DeepSeek Flash** for you. | Open the folder in the app, or `opencode` in a terminal from the folder |
+  | **Any of them in a terminal** | One of the above | [Ghostty](https://ghostty.org/download) (Mac) or your usual terminal, then run `claude`, `codex` or `opencode` from the project folder | `cd` into the folder first |
+
+  The workshop's steps are written for the Claude app, so the other routes take a little
+  more setup: get yours working before the day. The `/design` plugin is Claude-only; in the
+  other tools, ask the agent to follow the same steps (brief, direction, identity, images,
+  page, critique) with you.
+
 - **An AI inside your app (an API key).** The starter's AI features (summaries, drafted
   follow-ups) use **DeepSeek**: load a few dollars at platform.deepseek.com and make a
   key (step 5). It's pay as you go and costs cents for the day.
