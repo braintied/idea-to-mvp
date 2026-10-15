@@ -25,6 +25,31 @@ What you get, already wired:
 | [Vercel](https://vercel.com) | Hosting | Yes |
 | [Cloudflare](https://cloudflare.com) | Your domain | ~$10/year |
 
+## Before the workshop
+
+You need these accounts, a computer with [Claude](https://claude.ai/download) installed,
+and a Claude Pro plan (it includes Claude Code).
+
+1. **GitHub.** Sign up at github.com.
+2. **Vercel.** Sign up at vercel.com *with your GitHub account*, and stay signed in on
+   the laptop you're bringing: the Deploy Button needs it.
+3. **Supabase.** Sign up at supabase.com with GitHub. Don't create a project: the Deploy
+   Button makes one for you (create one yourself only if you skip the button).
+4. **Resend.** Sign up at resend.com and create an API key.
+5. **DeepSeek API.** Sign up at platform.deepseek.com, top up $2, create an API key.
+6. **Inngest.** Sign up at inngest.com with GitHub.
+7. **Cloudflare.** Sign up at cloudflare.com (you'll buy your domain in the morning).
+8. **Node.js.** Install the **LTS** version from nodejs.org, then in Terminal run
+   `npm install -g pnpm` (pnpm is the tool that installs the app's building blocks).
+   Check with `node -v` (22 or newer) and `pnpm -v`.
+
+9. **Git signed in to GitHub.** Install the GitHub CLI from cli.github.com, then in
+   Terminal run `gh auth login` and pick GitHub.com → HTTPS → Yes → Login with a web
+   browser. Check with `gh auth status`. Without it, copying your repo to your laptop
+   fails with "could not read Username".
+
+Check that each one works by logging in once. Stuck? Come to the help hour the night before.
+
 ## Deploy in one click
 
 **Before you click: sign in to Vercel.** The button runs inside your Vercel account, so in
@@ -58,39 +83,54 @@ asks for five values:
 
 The first production deploy creates the database tables ([`scripts/migrate-on-deploy.mjs`](scripts/migrate-on-deploy.mjs)). Two steps stay manual:
 
-1. **Supabase sign-in links.** In Vercel → your project → **Storage → Supabase → Open in
-   Supabase**, go to **Authentication → URL Configuration**. Set the Site URL to your
-   Vercel address (`https://my-idea.vercel.app`) and add `https://my-idea.vercel.app/auth/callback`
-   to Redirect URLs. While you're there, set **Authentication → Emails → SMTP Settings**
-   to Resend (host `smtp.resend.com`, port `465`, user `resend`, password: your Resend key),
-   or sign-in emails stop after two an hour.
+1. **Supabase sign-in links.** Find your live address first: Vercel → your project →
+   **Domains** (it looks like `my-idea-abc123.vercel.app`; copy it exactly). Then in
+   Vercel → **Storage → Supabase → Open in Supabase**, go to **Authentication → URL
+   Configuration**:
+   - **Site URL:** `https://YOUR-ADDRESS`
+   - **Redirect URLs:** add `https://YOUR-ADDRESS/**` and `http://localhost:3000/**`
+     (the `/**` covers every page, so links keep working as the app grows).
+
+   While you're there, open **Authentication → Emails → SMTP Settings** and turn on custom
+   SMTP with Resend: host `smtp.resend.com`, port `465`, username `resend`, password your
+   Resend key, sender email `onboarding@resend.dev` (just the address, no name), sender
+   name your app's name. Without it, sign-in emails stop after two an hour.
 2. **Your domain in Resend**, when you have one: Resend → Domains, copy its DNS records into
-   Cloudflare, then change `EMAIL_FROM` in Vercel → Settings → Environment Variables.
+   Cloudflare (set each one to **DNS only**, the grey cloud), then change `EMAIL_FROM` in
+   Vercel → Settings → Environment Variables and redeploy.
 
-To work on it on your computer, clone the new repo and follow [Setup](#setup-about-45-minutes)
-from step 1, using the database the button made.
+> **Changed an Environment Variable in Vercel?** It only reaches new deploys. Go to
+> **Deployments → ⋯ on the latest → Redeploy**.
 
-## Before the workshop
+### Work on your button-made app on your laptop
 
-You need these accounts, a computer with [Claude](https://claude.ai/download) installed,
-and a Claude Pro plan (it includes Claude Code).
+1. Make sure Git is signed in: `gh auth status` (if not, `gh auth login`, step 9 above).
+2. In Claude: **Code → choose a new, empty folder**. Then ⌨ in Terminal, from that folder
+   (your repo's address is on its GitHub page, under **Code**):
 
-1. **GitHub.** Sign up at github.com.
-2. **Vercel.** Sign up at vercel.com *with your GitHub account*, and stay signed in on
-   the laptop you're bringing: the Deploy Button needs it.
-3. **Supabase.** Sign up at supabase.com with GitHub, then create a new project. Save
-   the database password somewhere safe.
-4. **Resend.** Sign up at resend.com and create an API key.
-5. **DeepSeek API.** Sign up at platform.deepseek.com, top up $2, create an API key.
-6. **Inngest.** Sign up at inngest.com with GitHub.
-7. **Cloudflare.** Sign up at cloudflare.com (you'll buy your domain in the morning).
-8. **Node.js.** Install the **LTS** version from nodejs.org, then in Terminal run
-   `npm install -g pnpm` (pnpm is the tool that installs the app's building blocks).
-   Check with `node -v` (22 or newer) and `pnpm -v`.
+   ```bash
+   git clone https://github.com/YOUR-NAME/YOUR-REPO.git .
+   pnpm install
+   ```
 
-Check that each one works by logging in once. Stuck? Come to the help hour the night before.
+   The final dot matters: it puts the code in *this* folder, so Claude finds `CLAUDE.md`,
+   its tools and the `/design` plugin.
+3. ⌨ `pnpm keys`. The Supabase values are in Vercel → **Storage → Supabase →
+   `.env.local` tab** (click **Show secret**). Use the same Resend and DeepSeek keys you
+   gave the button.
+4. Optional, so Claude can read your database: open Supabase once through Vercel →
+   **Storage → Supabase → Open in Supabase** in this browser, then ⌨ `pnpm db:login`,
+   `pnpm db:link` (pick the project with your Vercel project's name) and `pnpm mcp:link`.
+   The database password is in Vercel → **Settings → Environment Variables →
+   `POSTGRES_PASSWORD`**. Don't reset it in Supabase: deploys use the saved one (see the
+   [runbook](docs/runbook.md)). If `db:link` lists no projects, skip this step; everything
+   else still works.
+5. **Skip `pnpm db:push`.** Your first deploy already made the tables, and new migrations
+   apply on every push.
+6. Quit Claude and reopen it on this same folder. Check with `pnpm doctor`: one line per
+   piece, all green.
 
-## Setup (about 45 minutes)
+## Setup without the Deploy Button (about 45 minutes)
 
 You can ask Claude Code to do most steps below. Open Claude, choose Code, pick an empty
 folder, and say: *"Set up this starter for me: github.com/braintied/idea-to-mvp. Walk me
@@ -104,11 +144,11 @@ seeing your keys on purpose.
 ### 1. Get the code
 
 On GitHub, open [braintied/idea-to-mvp](https://github.com/braintied/idea-to-mvp), click
-**Use this template → Create a new repository**, pick a name, choose **Private**, then:
+**Use this template → Create a new repository**, pick a name, choose **Private**, then,
+in Claude's Terminal from your new empty folder (the final dot keeps the code in this folder):
 
 ```bash
-git clone https://github.com/YOUR-NAME/YOUR-REPO.git
-cd YOUR-REPO
+git clone https://github.com/YOUR-NAME/YOUR-REPO.git .
 pnpm install
 ```
 
@@ -126,9 +166,9 @@ pnpm mcp:link    # lets Claude read (never change) your database
 Forgot the database password? Supabase → **Project Settings → Database → Reset
 database password**.
 
-In Supabase → **Authentication → URL Configuration**, set the Site URL to
-`http://localhost:3000` and add `http://localhost:3000/auth/callback` to Redirect URLs.
-(Add your live domain's `/auth/callback` too once you have one.)
+In Supabase → **Authentication → URL Configuration**, add `http://localhost:3000/**` to
+Redirect URLs. If you have no live site yet, set the Site URL to `http://localhost:3000`;
+once you do, the Site URL is your live address (localhost stays in Redirect URLs only).
 
 ### 3. Keys ⌨ in Terminal
 
@@ -152,13 +192,15 @@ paste. Run it again any time to change one.
 Then send sign-in emails through Resend too. Supabase's built-in email stops after two
 an hour, which locks you out after one typo. In Supabase → **Authentication → Emails →
 SMTP Settings**, turn on custom SMTP: host `smtp.resend.com`, port `465`, username
-`resend`, password your Resend key, sender the same address as `EMAIL_FROM`.
+`resend`, password your Resend key, sender email `onboarding@resend.dev` (just the
+address, no name; your own domain's address once it's verified), sender name your app's name.
 
 ### 4. Turn on Claude's tools
 
-Quit and reopen Claude Code in this folder (or start a new session), accept the prompts
-to trust the folder, enable the MCP servers and install the **braintied** plugin. Then
-type `/mcp`, choose **supabase** and sign in.
+Quit and reopen Claude Code on the folder that contains `CLAUDE.md` (or start a new
+session there), accept the prompts to trust the folder, enable the MCP servers and install
+the **braintied** plugin. Then type `/mcp`, choose **supabase** and sign in. If `/design`
+says unknown, Claude is open one folder too high. Check everything with `pnpm doctor`.
 
 ### 5. Run it
 
@@ -169,7 +211,9 @@ pnpm dev
 Open http://localhost:3000 and try the whole loop:
 
 1. Join your own waitlist with your `OWNER_EMAIL`. A welcome email arrives.
-2. Click **Sign in**, enter the same email, and open the link Supabase emails you.
+2. Click **Sign in**, enter the same email, and open the link Supabase emails you, in
+   this same browser. The very first email says "Confirm your email address": that's your
+   sign-in link.
 3. In the CRM, add your waitlist entry as a contact, write a note, then try
    **Summarize**, **Draft follow-up** and **Send** (to yourself).
 
@@ -177,7 +221,8 @@ No sign-in email? Wait a minute before asking again: Supabase sends one per addr
 minute. The [runbook](docs/runbook.md) covers the rest.
 
 To see background jobs, run this in a second Terminal tab, open http://localhost:8288,
-go to **Functions → daily-follow-up-digest → Invoke**, and check your inbox:
+go to **Functions → daily-follow-up-digest → Invoke** with the data `{"days": 0}` (so it
+includes the contacts you made today; the morning schedule uses 7 days), and check your inbox:
 
 ```bash
 pnpm inngest
@@ -192,8 +237,12 @@ pnpm inngest
    (Used the Deploy Button? This is already done.)
 3. In Vercel → **Integrations**, add **Inngest**. It sets the Inngest keys for you.
 4. In Vercel → **Domains**, add your Cloudflare domain and copy the DNS records it asks
-   for into Cloudflare.
-5. Add `https://yourdomain.com/auth/callback` to Supabase's Redirect URLs.
+   for into Cloudflare → DNS. Set each record's proxy status to **DNS only** (grey cloud):
+   the orange cloud breaks Vercel's certificate.
+5. In Supabase → URL Configuration, set the Site URL to `https://yourdomain.com` and add
+   `https://yourdomain.com/**` to Redirect URLs. In Vercel, set `NEXT_PUBLIC_SITE_URL` to
+   `https://yourdomain.com`, then **Deployments → Redeploy** (variables only reach new
+   deploys). Or ask Claude: `/connect-domain`.
 
 ## The harness: how this repo helps you build
 
@@ -209,6 +258,7 @@ simplified for first-time builders:
 | Specialists | [.claude/agents/](.claude/agents) | `planner`, `reviewer`, `designer`. |
 | Guardrails | [.claude/settings.json](.claude/settings.json), [.githooks/](.githooks) | Claude can't read your keys; git refuses commits containing keys and pushes that don't build. |
 | Skills | the [braintied plugin](https://github.com/braintied/claude-plugins) | `/design`, `/explain`, `/next`, `/learn`, `/brand-to-tokens`, `/review-my-diff`, `/ship-it`. |
+| Workshop skills | [.claude/skills/](.claude/skills) | `/doctor` (what's set up, what isn't), `/fix-deploy`, `/connect-domain`, `/make-it-mine` (your name everywhere), `/add-page`, `/add-table`, `/crm-fields`, `/add-env`. |
 | History | [docs/changelog/](docs/changelog) | What changed, why, and how it was checked. |
 | When it breaks | [docs/runbook.md](docs/runbook.md) | Common errors and their fixes. |
 
@@ -257,6 +307,7 @@ pnpm keys       # add or change a key in .env.local
 pnpm db:push    # apply new database migrations
 pnpm db:types   # refresh database types after a migration
 pnpm mcp:link   # point Claude's Supabase tool at your project
+pnpm doctor     # check every piece of the setup (never prints your keys)
 ```
 
 ## License
