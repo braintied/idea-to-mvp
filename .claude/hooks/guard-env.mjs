@@ -23,3 +23,18 @@ if (realEnvFile.test(target) && !copyingTemplate) {
   );
   process.exit(2);
 }
+
+// grep -r (and -R, egrep -r, fgrep -r) searches every file, including
+// .env.local, and prints matching lines, keys and all. Unlike the Grep tool
+// and rg, it doesn't skip ignored files. Allowed only when it excludes env files.
+const recursiveGrep =
+  tool === "Bash" &&
+  /\b[ef]?grep\b[^|;&]*\s(-[A-Za-z]*[rR]|--(dereference-)?recursive\b)/.test(target) &&
+  !/--exclude=['"]?\.env/.test(target);
+
+if (recursiveGrep) {
+  console.error(
+    "Blocked: recursive grep would print .env.local. Use the Grep tool (it skips env files) or add --exclude='.env*'.",
+  );
+  process.exit(2);
+}
