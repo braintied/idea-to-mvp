@@ -18,6 +18,7 @@
     "prepare": "node scripts/install-git-hooks.mjs",
     "mcp:link": "node scripts/link-mcp.mjs",
     "keys": "node scripts/keys.mjs",
+    "checkup": "node scripts/checkup.mjs",
     "verify": "pnpm check",
     "deploy-button": "node scripts/deploy-button-url.mjs"
   },

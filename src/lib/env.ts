@@ -32,7 +32,9 @@ export const emailEnv = () =>
 
 export const ownerEnv = () =>
   read("Owner", {
-    OWNER_EMAIL: z.email(),
+    // Trimmed and lowercased, because Supabase stores sign-in emails in
+    // lowercase: "Priya@Gmail.com " still matches priya@gmail.com.
+    OWNER_EMAIL: z.string().trim().toLowerCase().pipe(z.email()),
   });
 
 export const aiEnv = () =>

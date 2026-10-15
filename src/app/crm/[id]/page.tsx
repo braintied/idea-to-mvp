@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { STAGES } from "@/lib/crm";
 import { createUserClient } from "@/lib/supabase/server";
+import { ActionForm } from "../action-form";
 import { addNote, setStage } from "../actions";
 import { AiPanel } from "./ai-panel";
-
-const stages = ["lead", "talking", "customer", "partner", "archived"];
 
 export default function ContactPage({ params }: PageProps<"/crm/[id]">) {
   return (
@@ -41,19 +41,19 @@ async function Contact({ params }: Pick<PageProps<"/crm/[id]">, "params">) {
             {[contact.company, contact.email].filter(Boolean).join(" · ") || "No details yet"}
           </p>
         </div>
-        <form action={setStage.bind(null, id)} className="flex gap-2">
+        <ActionForm action={setStage.bind(null, id)} className="flex flex-wrap gap-2">
           <select name="stage" defaultValue={contact.stage} className="rounded-lg border border-line bg-surface px-3 py-2">
-            {stages.map((stage) => (
+            {STAGES.map((stage) => (
               <option key={stage}>{stage}</option>
             ))}
           </select>
           <button className="rounded-lg border border-line px-3 py-2 text-sm">Save</button>
-        </form>
+        </ActionForm>
       </header>
 
       <AiPanel contactId={id} hasEmail={Boolean(contact.email)} />
 
-      <form action={addNote.bind(null, id)} className="my-6 flex flex-col gap-2">
+      <ActionForm action={addNote.bind(null, id)} className="my-6 flex flex-col gap-2">
         <textarea
           name="body"
           required
@@ -62,7 +62,7 @@ async function Contact({ params }: Pick<PageProps<"/crm/[id]">, "params">) {
           className="rounded-xl border border-line bg-surface px-4 py-3"
         />
         <button className="self-end rounded-lg bg-brand px-4 py-2 font-medium text-brand-ink">Add note</button>
-      </form>
+      </ActionForm>
 
       <ol className="space-y-3">
         {notes.map((note) => (

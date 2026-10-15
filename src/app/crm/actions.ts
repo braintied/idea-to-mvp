@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { attempt } from "@/lib/action-result";
 import { draftFollowUp, summarizeContact } from "@/lib/ai";
+import { STAGES } from "@/lib/crm";
 import { sendEmail } from "@/lib/email";
 import { ownerEnv } from "@/lib/env";
 import { createAdminClient, createUserClient, getUser } from "@/lib/supabase/server";
@@ -12,51 +13,79 @@ import { createAdminClient, createUserClient, getUser } from "@/lib/supabase/ser
 // Every action here runs as the signed-in user, so row-level security
 // guarantees they can only touch their own contacts and notes.
 
-const stages = ["lead", "talking", "customer", "partner", "archived"] as const;
+// What a form action returns, so the form can show what went wrong.
+// Form actions check what was typed with safeParse and return a message
+// instead of throwing: on the live site a thrown error shows only a
+// blank "Application error". Never .parse() what a person typed.
+export type FormState = { ok: true } | { ok: false; error: string };
 
 const newContact = z.object({
-  name: z.string().trim().min(1).max(200),
-  email: z.union([z.email(), z.literal("")]),
-  company: z.string().trim().max(200),
+  name: z.string().trim().min(1, "Add a name.").max(200, "That name is too long (200 characters max)."),
+  email: z.union([z.email("That doesn't look like an email address."), z.literal("")]),
+  company: z.string().trim().max(200, "That company name is too long (200 characters max)."),
 });
 
-export async function addContact(form: FormData) {
-  const parsed = newContact.parse({
+export async function addContact(_previous: FormState, form: FormData): Promise<FormState> {
+  const parsed = newContact.safeParse({
     name: form.get("name"),
     email: form.get("email") ?? "",
     company: form.get("company") ?? "",
   });
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  const { name, email, company } = parsed.data;
+
   const supabase = await createUserClient();
   const { data, error } = await supabase
     .from("contacts")
-    .insert({ name: parsed.name, email: parsed.email || null, company: parsed.company || null })
+    .insert({ name, email: email || null, company: company || null })
     .select("id")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("add contact failed", error);
+    return { ok: false, error: `Couldn't save the contact: ${error.message}` };
+  }
   redirect(`/crm/${data.id}`);
 }
 
-export async function addNote(contactId: string, form: FormData) {
-  const body = z.string().trim().min(1).max(10000).parse(form.get("body"));
+const noteBody = z
+  .string()
+  .trim()
+  .min(1, "Write something first.")
+  .max(10000, "That note is too long (10,000 characters max).");
+
+export async function addNote(contactId: string, _previous: FormState, form: FormData): Promise<FormState> {
+  const parsed = noteBody.safeParse(form.get("body"));
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+
   const supabase = await createUserClient();
-  const { error } = await supabase.from("notes").insert({ contact_id: contactId, body });
-  if (error) throw new Error(error.message);
+  const { error } = await supabase.from("notes").insert({ contact_id: contactId, body: parsed.data });
+  if (error) {
+    console.error("add note failed", error);
+    return { ok: false, error: `Couldn't save the note: ${error.message}` };
+  }
   revalidatePath(`/crm/${contactId}`);
+  return { ok: true };
 }
 
-export async function setStage(contactId: string, form: FormData) {
-  const stage = z.enum(stages).parse(form.get("stage"));
+export async function setStage(contactId: string, _previous: FormState, form: FormData): Promise<FormState> {
+  const parsed = z.enum(STAGES, `Pick one of: ${STAGES.join(", ")}.`).safeParse(form.get("stage"));
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+
   const supabase = await createUserClient();
-  const { error } = await supabase.from("contacts").update({ stage }).eq("id", contactId);
-  if (error) throw new Error(error.message);
+  const { error } = await supabase.from("contacts").update({ stage: parsed.data }).eq("id", contactId);
+  if (error) {
+    console.error("set stage failed", error);
+    return { ok: false, error: `Couldn't change the stage: ${error.message}` };
+  }
   revalidatePath(`/crm/${contactId}`);
   revalidatePath("/crm");
+  return { ok: true };
 }
 
 // Waitlist → CRM. Only the owner (OWNER_EMAIL) can see the waitlist.
 export async function addWaitlistEntryToCrm(entryId: string) {
   const user = await getUser();
-  if (!user || user.email !== ownerEnv().OWNER_EMAIL) throw new Error("Only the owner can do this.");
+  if (!user || user.email?.toLowerCase() !== ownerEnv().OWNER_EMAIL) throw new Error("Only the owner can do this.");
 
   const admin = createAdminClient();
   const { data: entry, error } = await admin.from("waitlist").select("*").eq("id", entryId).single();
@@ -119,10 +148,12 @@ export async function sendFollowUp(contactId: string, form: FormData) {
   return attempt(async () => {
     const user = await getUser();
     if (!user?.email) throw new Error("Sign in first.");
-    const { subject, body } = outgoing.parse({
+    const parsed = outgoing.safeParse({
       subject: form.get("subject"),
       body: form.get("body"),
     });
+    if (!parsed.success) throw new Error("Add a subject and a message before sending.");
+    const { subject, body } = parsed.data;
     const { contact } = await loadContact(contactId);
     if (!contact.email) throw new Error("This contact has no email address.");
 

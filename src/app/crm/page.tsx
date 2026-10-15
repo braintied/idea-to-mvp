@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { createAdminClient, createUserClient, getUser } from "@/lib/supabase/server";
 import { ownerEnv } from "@/lib/env";
+import { ActionForm } from "./action-form";
 import { addContact, addWaitlistEntryToCrm, signOut } from "./actions";
 
 async function newWaitlistSignups() {
@@ -36,7 +37,7 @@ async function Contacts() {
   if (error) throw new Error(error.message);
 
   // The owner also sees new waitlist signups, ready to pull into the CRM.
-  const isOwner = user?.email === ownerEnv().OWNER_EMAIL;
+  const isOwner = user?.email?.toLowerCase() === ownerEnv().OWNER_EMAIL;
   const waitlist = isOwner ? await newWaitlistSignups() : null;
 
   return (
@@ -48,7 +49,7 @@ async function Contacts() {
         </form>
       </header>
 
-      <form
+      <ActionForm
         action={addContact}
         className="mb-8 grid gap-3 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-4"
       >
@@ -56,7 +57,7 @@ async function Contacts() {
         <input name="email" type="email" placeholder="Email" className="rounded-lg border border-line bg-background px-3 py-2" />
         <input name="company" placeholder="Company" className="rounded-lg border border-line bg-background px-3 py-2" />
         <button className="rounded-lg bg-brand px-4 py-2 font-medium text-brand-ink">Add contact</button>
-      </form>
+      </ActionForm>
 
       {waitlist && waitlist.length > 0 && (
         <section className="mb-8">
