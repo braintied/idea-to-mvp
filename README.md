@@ -27,6 +27,21 @@ What you get, already wired:
 
 ## Deploy in one click
 
+**Before you click: sign in to Vercel.** The button runs inside your Vercel account, so in
+the same browser you'll click it from:
+
+1. **Sign in to [github.com](https://github.com).**
+2. **Sign in to [vercel.com](https://vercel.com/login) with "Continue with GitHub".** You
+   should land on your Vercel dashboard. No account yet? Signing up with GitHub there is
+   the same step.
+3. **Have two keys ready to paste:** your DeepSeek API key and your Resend API key (where to
+   get them is in the table below).
+
+Signed in first, the button runs in one pass and the project lands in *your* account, not
+a work or teammate account you happen to be signed in to. While it runs, Vercel asks to
+connect to GitHub (allow it: that's how it copies the starter into your account) and to
+add Supabase and Inngest (pick the free plans).
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp&project-name=my-idea&repository-name=my-idea&env=OWNER_EMAIL%2CDEEPSEEK_API_KEY%2CRESEND_API_KEY%2CAI_MODEL%2CEMAIL_FROM&envDescription=OWNER_EMAIL%3A+the+email+you+sign+in+with+%28the+one+you+signed+up+to+Resend+with%29.+DEEPSEEK_API_KEY%3A+platform.deepseek.com+%E2%86%92+API+keys.+RESEND_API_KEY%3A+resend.com+%E2%86%92+API+Keys.+Keep+the+defaults+for+AI_MODEL+and+EMAIL_FROM.&envLink=https%3A%2F%2Fgithub.com%2Fbraintied%2Fidea-to-mvp%23deploy-in-one-click&envDefaults=%7B%22AI_MODEL%22%3A%22deepseek-flash%22%2C%22EMAIL_FROM%22%3A%22My+Idea+%3Conboarding%40resend.dev%3E%22%7D&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%2C%22protocol%22%3A%22storage%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22inngest%22%2C%22productSlug%22%3A%22account%22%7D%5D)
 
 The button copies this starter into your GitHub, creates your Vercel project, sets up a
@@ -61,7 +76,8 @@ You need these accounts, a computer with [Claude](https://claude.ai/download) in
 and a Claude Pro plan (it includes Claude Code).
 
 1. **GitHub.** Sign up at github.com.
-2. **Vercel.** Sign up at vercel.com *with your GitHub account*.
+2. **Vercel.** Sign up at vercel.com *with your GitHub account*, and stay signed in on
+   the laptop you're bringing: the Deploy Button needs it.
 3. **Supabase.** Sign up at supabase.com with GitHub, then create a new project. Save
    the database password somewhere safe.
 4. **Resend.** Sign up at resend.com and create an API key.

@@ -11,7 +11,8 @@
 
 ## The first deploy: the Deploy Button
 
-The README's **Deploy with Vercel** button does the first deploy in one pass: it copies
+Sign in to vercel.com (with GitHub) in the same browser *before* you click it. Then the
+README's **Deploy with Vercel** button does the first deploy in one pass: it copies
 the starter into your GitHub, creates the Vercel project, sets up Supabase and Inngest
 through Vercel, and asks for your keys in Vercel's own form (keys never go in a link or a
 chat). On the first production build, [`scripts/migrate-on-deploy.mjs`](../../scripts/migrate-on-deploy.mjs)
