@@ -119,7 +119,7 @@ pnpm db:push    # apply new migrations (changes the live database)
 pnpm db:types   # refresh src/lib/database.types.ts after a migration
 pnpm mcp:link   # point the Supabase MCP at your project (after pnpm db:link)
 pnpm keys       # the person fills in .env.local (their Terminal, never this chat)
-pnpm doctor     # one line per piece of the setup: set, missing or broken (never values)
+pnpm checkup    # one line per piece of the setup: set, missing or broken (never values)
 ```
 
 `pnpm db:login`, `pnpm db:link` and `pnpm keys` ask questions or open a browser. Ask the

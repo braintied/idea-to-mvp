@@ -2,7 +2,7 @@
 
 Created 2026-10-14 · Updated 2026-10-15 · Version 3
 
-Paste the exact error into Claude Code first, and run `pnpm doctor`: one line per piece of
+Paste the exact error into Claude Code first, and run `pnpm checkup`: one line per piece of
 the setup, never your key values. These are the usual causes.
 
 | Symptom | Likely cause | Fix |
@@ -25,7 +25,7 @@ the setup, never your key values. These are the usual causes.
 | "email rate limit exceeded" on the live site | Supabase's built-in email: two an hour | Supabase → Authentication → Emails → SMTP Settings → Resend (README, "Deploy in one click"). |
 | Inngest shows no app after the first deploy | The integration hasn't synced yet | Inngest dashboard → Apps → Sync new app, URL `https://<your-project>.vercel.app/api/inngest`. |
 | Digest never sends | Inngest not connected in production | Vercel → Integrations → Inngest; then Inngest dashboard → Apps should list this app. |
-| AI button errors | Missing or empty-balance DeepSeek key, or wrong `AI_MODEL` | Top up at platform.deepseek.com → Top up; `AI_MODEL` should be `deepseek-flash`. `pnpm doctor` shows the balance state. |
+| AI button errors | Missing or empty-balance DeepSeek key, or wrong `AI_MODEL` | Top up at platform.deepseek.com → Top up; `AI_MODEL` should be `deepseek-flash`. `pnpm checkup` shows the balance state. |
 | Sign-in link opens the home page and you're not signed in | Redirect URL not allow-listed, so Supabase fell back to the Site URL | Add `<site>/**` to Redirect URLs. (The app now forwards a stray `?code=` to sign-in.) |
 | First email says "Confirm your email address" | Normal for a first sign-in | Click it in the same browser; it signs you in. |
 | Live sign-in link points at `localhost` | Site URL is still `http://localhost:3000` | Site URL → your live address; localhost goes in Redirect URLs only. |

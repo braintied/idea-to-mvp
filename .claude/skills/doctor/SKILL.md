@@ -5,7 +5,7 @@ description: Check every piece of this app's setup and say what's working, missi
 
 # Doctor
 
-1. Run `pnpm doctor`. It prints one line per piece (env values set or missing, Supabase
+1. Run `pnpm checkup`. It prints one line per piece (env values set or missing, Supabase
    reachable and tables present, Resend key valid, DeepSeek balance, site address, Inngest
    dev server) and never prints a key.
 2. Read the lines back in plain words, worst first. For each red line, say the one fix,

@@ -127,7 +127,7 @@ The first production deploy creates the database tables ([`scripts/migrate-on-de
    else still works.
 5. **Skip `pnpm db:push`.** Your first deploy already made the tables, and new migrations
    apply on every push.
-6. Quit Claude and reopen it on this same folder. Check with `pnpm doctor`: one line per
+6. Quit Claude and reopen it on this same folder. Check with `pnpm checkup`: one line per
    piece, all green.
 
 ## Setup without the Deploy Button (about 45 minutes)
@@ -200,7 +200,7 @@ address, no name; your own domain's address once it's verified), sender name you
 Quit and reopen Claude Code on the folder that contains `CLAUDE.md` (or start a new
 session there), accept the prompts to trust the folder, enable the MCP servers and install
 the **braintied** plugin. Then type `/mcp`, choose **supabase** and sign in. If `/design`
-says unknown, Claude is open one folder too high. Check everything with `pnpm doctor`.
+says unknown, Claude is open one folder too high. Check everything with `pnpm checkup`.
 
 ### 5. Run it
 
@@ -307,7 +307,7 @@ pnpm keys       # add or change a key in .env.local
 pnpm db:push    # apply new database migrations
 pnpm db:types   # refresh database types after a migration
 pnpm mcp:link   # point Claude's Supabase tool at your project
-pnpm doctor     # check every piece of the setup (never prints your keys)
+pnpm checkup    # check every piece of the setup (never prints your keys)
 ```
 
 ## License

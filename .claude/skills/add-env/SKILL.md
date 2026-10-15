@@ -16,4 +16,4 @@ Never ask for the value in the chat. The person types it themselves.
    - run `pnpm keys` in their own Terminal for the laptop;
    - add it in Vercel → Settings → Environment Variables (Production and Preview);
    - then Deployments → ⋯ → **Redeploy**, because variables only reach new deploys.
-5. If `pnpm doctor` should check it, add a line there too.
+5. If `pnpm checkup` should check it, add a line there too.
