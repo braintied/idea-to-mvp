@@ -27,8 +27,17 @@ What you get, already wired:
 
 ## Before the workshop
 
-You need these accounts, a computer with [Claude](https://claude.ai/download) installed,
-and a Claude Pro plan (it includes Claude Code).
+You need a laptop and two kinds of AI, which do different jobs:
+
+- **An AI to build with (a subscription).** Our pick: a **Claude** plan (Pro or higher,
+  it includes Claude Code) with the [Claude app](https://claude.ai/download) installed.
+  We build with **Opus 5.5 on medium thinking**; choose it in Claude Code's model picker.
+  A ChatGPT plan with Codex works too: `AGENTS.md` points it at the same rules in `CLAUDE.md`.
+- **An AI inside your app (an API key).** The starter's AI features (summaries, drafted
+  follow-ups) use **DeepSeek**: load a few dollars at platform.deepseek.com and make a
+  key (step 5). It's pay as you go and costs cents for the day.
+
+And these accounts:
 
 1. **GitHub.** Sign up at github.com.
 2. **Vercel.** Sign up at vercel.com *with your GitHub account*, and stay signed in on
@@ -36,7 +45,8 @@ and a Claude Pro plan (it includes Claude Code).
 3. **Supabase.** Sign up at supabase.com with GitHub. Don't create a project: the Deploy
    Button makes one for you (create one yourself only if you skip the button).
 4. **Resend.** Sign up at resend.com and create an API key.
-5. **DeepSeek API.** Sign up at platform.deepseek.com, top up $2, create an API key.
+5. **DeepSeek API.** Sign up at platform.deepseek.com, top up $2 (Top up), then
+   API keys → Create. Save the key somewhere safe; you'll paste it into the Deploy Button.
 6. **Inngest.** Sign up at inngest.com with GitHub.
 7. **Cloudflare.** Sign up at cloudflare.com (you'll buy your domain in the morning).
 8. **Node.js.** Install the **LTS** version from nodejs.org, then in Terminal run
