@@ -5,10 +5,27 @@ import { supabasePublicEnv } from "@/lib/supabase/public-env";
 // Runs before every page request. It keeps the login session fresh and
 // sends signed-out visitors away from the CRM.
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
-  const { url, publishableKey } = supabasePublicEnv();
+  // A sign-in link that landed on the home page (/?code=...). Supabase sends
+  // people to the Site URL when the link's address isn't in its Redirect URLs
+  // list. Pass the code on to /auth/callback so the sign-in still finishes.
+  if (request.nextUrl.pathname === "/" && request.nextUrl.searchParams.has("code")) {
+    const callback = request.nextUrl.clone();
+    callback.pathname = "/auth/callback";
+    return NextResponse.redirect(callback);
+  }
 
-  const supabase = createServerClient(url, publishableKey, {
+  // Before Supabase is connected (no keys yet), let the page load as it is.
+  // The sign-in form then says what's missing instead of a crash.
+  let env: ReturnType<typeof supabasePublicEnv>;
+  try {
+    env = supabasePublicEnv();
+  } catch (setupError) {
+    console.error("proxy: Supabase not connected", setupError);
+    return NextResponse.next();
+  }
+
+  let response = NextResponse.next({ request });
+  const supabase = createServerClient(env.url, env.publishableKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (cookiesToSet) => {
@@ -33,7 +50,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Only the pages that care about login. The public site and the
-  // Inngest endpoint skip this entirely.
-  matcher: ["/crm/:path*", "/login"],
+  // Only the pages that care about login, plus the home page when a sign-in
+  // code landed there. The rest of the public site and the Inngest endpoint
+  // skip this entirely.
+  matcher: ["/crm/:path*", "/login", { source: "/", has: [{ type: "query", key: "code" }] }],
 };
