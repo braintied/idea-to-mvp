@@ -1,6 +1,6 @@
 import "server-only";
 import { createDeepSeek } from "@ai-sdk/deepseek";
-import { generateText, Output } from "ai";
+import { Output, streamText } from "ai";
 import { z } from "zod";
 import type { Contact, Note } from "@/lib/database.types";
 import { aiEnv } from "@/lib/env";
@@ -8,9 +8,28 @@ import { aiEnv } from "@/lib/env";
 // All AI calls go through here. To switch models, change AI_MODEL in
 // .env.local. To switch providers, swap @ai-sdk/deepseek for another
 // AI SDK provider (openai, google...) — the rest of the app doesn't change.
+//
+// Calls use streamText and wait for the finished result. DeepSeek's
+// non-streaming endpoint can stall for over a minute while its streaming one
+// answers in seconds (measured 2026-10-15), and a stalled request looks like
+// a frozen button. The page still gets one complete answer.
 function model() {
   const env = aiEnv();
   return createDeepSeek({ apiKey: env.DEEPSEEK_API_KEY })(env.AI_MODEL);
+}
+
+// streamText reports a provider error (bad key, no credit) through onError and
+// then rejects with a generic "no output" error. Keep the real one so the
+// page can say what to fix.
+async function finish<T>(start: (onError: (event: { error: unknown }) => void) => PromiseLike<T>): Promise<T> {
+  let failure: unknown = null;
+  try {
+    return await start(({ error }) => {
+      failure = error;
+    });
+  } catch (error) {
+    throw failure ?? error;
+  }
 }
 
 function describe(contact: Contact, notes: Note[]) {
@@ -27,13 +46,15 @@ function describe(contact: Contact, notes: Note[]) {
 }
 
 export async function summarizeContact(contact: Contact, notes: Note[]) {
-  const { text } = await generateText({
-    model: model(),
-    system:
-      "You help a founder keep track of relationships. Be concrete and brief. Only use facts from the notes; never invent details.",
-    prompt: `Summarize where things stand with this person in 3 short bullet points, then one line starting "Next:" with the single best next step.\n\n${describe(contact, notes)}`,
-  });
-  return text;
+  return finish((onError) =>
+    streamText({
+      onError,
+      model: model(),
+      system:
+        "You help a founder keep track of relationships. Be concrete and brief. Only use facts from the notes; never invent details.",
+      prompt: `Summarize where things stand with this person in 3 short bullet points, then one line starting "Next:" with the single best next step.\n\n${describe(contact, notes)}`,
+    }).text,
+  );
 }
 
 const draftSchema = z.object({
@@ -42,12 +63,14 @@ const draftSchema = z.object({
 });
 
 export async function draftFollowUp(contact: Contact, notes: Note[], senderName: string) {
-  const { output } = await generateText({
-    model: model(),
-    output: Output.object({ schema: draftSchema }),
-    system:
-      "You write short, warm, specific follow-up emails. Plain text, no markdown, under 120 words. Reference something real from the notes. Never invent facts, dates, or promises.",
-    prompt: `Write a follow-up email from ${senderName} to ${contact.name}.\n\n${describe(contact, notes)}`,
-  });
-  return output;
+  return finish((onError) =>
+    streamText({
+      onError,
+      model: model(),
+      output: Output.object({ schema: draftSchema }),
+      system:
+        "You write short, warm, specific follow-up emails. Plain text, no markdown, under 120 words. Reference something real from the notes. Never invent facts, dates, or promises.",
+      prompt: `Write a follow-up email from ${senderName} to ${contact.name}.\n\n${describe(contact, notes)}`,
+    }).output,
+  );
 }

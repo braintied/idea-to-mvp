@@ -8,8 +8,8 @@ Every AI call in this app lives in [`src/lib/ai.ts`](../../src/lib/ai.ts).
 
 ## Two calls, two shapes
 
-- `summarizeContact` uses `generateText` and gets **text** back.
-- `draftFollowUp` uses `generateText` with `Output.object({ schema })` and gets back a
+- `summarizeContact` uses `streamText` and waits for the finished **text**.
+- `draftFollowUp` uses `streamText` with `Output.object({ schema })` and gets back a
   **checked object** `{ subject, body }`. The schema is zod: if the model returns the
   wrong shape, the SDK catches it. Ask for structured output whenever code will use the
   answer.
