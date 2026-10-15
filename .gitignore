@@ -45,6 +45,11 @@ next-env.d.ts
 !.env.example
 !CLAUDE.md
 !.mcp.json
+# Tool configs shared with the repo (some global gitignores hide them)
+!AGENTS.md
+!opencode.json
+!.codex/config.toml
+!.agents/
 
 # Screenshots Claude takes while checking pages (playwright MCP)
 .playwright-mcp/
