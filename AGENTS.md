@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # AGENTS.md
 
-Created 2026-10-14 · Updated 2026-10-15 · Version 5
+Created 2026-10-14 · Updated 2026-10-16 · Version 6
 
 Every coding agent reads this file at the start of a session: Claude Code (through
 CLAUDE.md, which imports it), Codex in the ChatGPT app, and OpenCode. It is the project's
@@ -34,7 +34,9 @@ anything, or suggest `/design` to work through it.
 ## The brand
 
 Colors live only in `src/app/globals.css` as tokens (`--brand`, `--surface`, `--muted`...).
-Fonts are loaded in `src/app/layout.tsx` (`next/font`) and exposed as `--font-sans` /
+Fonts are bundled by the pinned `geist` package and loaded locally in
+`src/app/layout.tsx` (`next/font/local` through `geist/font/*`); builds need no
+Google Fonts request. They are exposed as `--font-sans` /
 `--font-mono` in globals.css. Use Tailwind classes built from the tokens (`bg-brand`,
 `text-muted`, `border-line`). Never write a hex color in a component.
 
