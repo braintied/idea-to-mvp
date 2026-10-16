@@ -1,5 +1,7 @@
 # Bundle Geist fonts for offline builds
 
+**Status:** Historical
+
 Created: 2026-10-16 (Asia/Kolkata)  
 Updated: 2026-10-16 (Asia/Kolkata)  
 Version: 1
@@ -20,3 +22,7 @@ Verification uses the starter's required `pnpm check` (typecheck, lint, build)
 and a frozen offline reinstall. No database migration, deployment or external
 credential was involved. The strict sandbox's Linux network/uid proof belongs
 to its own live red-team gate.
+
+Desktop (1440px) and mobile (390px) browser proof: both local woff2 files loaded,
+zero external requests/page errors, no horizontal overflow, and visual inspection
+passed. Screenshots are preserved in the rescue chat outputs; the QA server stopped.
