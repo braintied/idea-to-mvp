@@ -334,3 +334,5 @@ pnpm checkup    # check every piece of the setup (never prints your keys)
 ## License
 
 MIT
+
+Built end to end by Kit.
